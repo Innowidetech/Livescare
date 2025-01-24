@@ -59,12 +59,21 @@ exports.contactUs = async (req, res) => {
 
 exports.submitRequest = async (req, res) => {
     try {
-        const { name, itemName, mobileNumber, email, state, city, address, pincode, description } = req.body;
+        const { name, itemName, amount, mobileNumber, email, state, city, address, pincode, description } = req.body;
         if (!name || !itemName || !mobileNumber || !email || !state || !city || !address || !pincode || !description) {
             return res.status(400).json({ message: "Provide all the details to submit the form." })
         }
 
-        const newSubmitRequest = new SubmitRequest({ name, itemName, mobileNumber, email, state, city, address, pincode, description });
+        if (itemName === 'Money') {
+            if (!amount) {
+                return res.status(400).json({ message: "Amount must be specified." });
+            }
+            if(amount > 10000){
+                return res.status(400).json({ message: "The requested amount must be less than 10000" });
+            }
+        }
+
+        const newSubmitRequest = new SubmitRequest({ name, itemName, amount, mobileNumber, email, state, city, address, pincode, description });
         await newSubmitRequest.save()
 
         // await sendEmailToAdmin(process.env.EMAIL_ID, email, `Submit Request Form - Livescare by ${name}`, contactUsTemplate(name, itemName, mobileNumber, email, state, city, address, pincode, description));

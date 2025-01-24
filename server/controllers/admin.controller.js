@@ -492,6 +492,15 @@ exports.getCompletedRequestPercentages = async (req, res) => {
             return counts;
         };
 
+        const getTotalMoney = (requests) => {
+            return requests.reduce((total, request) => {
+                if (request.itemName === 'Money' && request.amount) {
+                    total += request.amount; // Assuming 'amount' is the field for money
+                }
+                return total;
+            }, 0);
+        };
+
         let donorCompletedRequests = [];
         let submitCompletedRequests = [];
 
@@ -527,6 +536,9 @@ exports.getCompletedRequestPercentages = async (req, res) => {
         const totalDonorCompleted = donorCompletedRequests.length;
         const totalSubmitCompleted = submitCompletedRequests.length;
 
+        const donorTotalMoney = getTotalMoney(donorCompletedRequests);
+        const submitTotalMoney = getTotalMoney(submitCompletedRequests);
+
         const calculatePercentages = (itemCounts, totalCompleted) => {
             return itemNames.reduce((acc, itemName) => {
                 const count = itemCounts[itemName];
@@ -543,11 +555,13 @@ exports.getCompletedRequestPercentages = async (req, res) => {
                 totalCompleted: totalDonorCompleted,
                 //   itemCounts: donorItemCounts,
                 itemPercentages: donorItemPercentages,
+                totalMoney: donorTotalMoney,
             },
             submitRequest: {
                 totalCompleted: totalSubmitCompleted,
                 //   itemCounts: submitItemCounts,
                 itemPercentages: submitItemPercentages,
+                totalMoney: submitTotalMoney,
             }
         };
 

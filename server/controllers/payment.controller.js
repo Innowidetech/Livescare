@@ -33,7 +33,7 @@ exports.createPaymentOrder = async (req, res, amount) => {
 };
 
 exports.verifyPayment = async (req, res) => {
-    const { paymentIntentId, paymentSignature,donorRequestData } = req.body;
+    const { paymentIntentId, paymentSignature, donorRequestData } = req.body;
 
     try {
         const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);

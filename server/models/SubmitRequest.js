@@ -10,6 +10,12 @@ const SubmitRequestSchema = new mongoose.Schema({
         required: true,
         enum: ['Food', 'Clothes', 'Books', 'Medical', 'Toys', 'Games Kit', 'Money', 'Others']
     },
+    amount: {
+        type: Number,
+        required: function () {
+            return this.itemName === 'Money';
+        },
+    },
     mobileNumber:{
         type: String,
         required: true,
