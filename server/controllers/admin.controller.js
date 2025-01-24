@@ -565,6 +565,7 @@ exports.getCompletedRequestPercentages = async (req, res) => {
         const submitItemPercentages = calculatePercentages(submitItemCounts, totalSubmitCompleted);
 
         const donorDailyIncome = getDailyIncome(donorCompletedRequests);
+        const submitDailyIncome = getDailyIncome(submitCompletedRequests);  // New addition
 
         const allDaysInMonth = [];
         const daysInMonth = moment(`${queryYear}-${queryMonth}`, 'YYYY-MM').daysInMonth();
@@ -572,7 +573,8 @@ exports.getCompletedRequestPercentages = async (req, res) => {
             const dayString = moment(`${queryYear}-${queryMonth}-${day.toString().padStart(2, '0')}`).format('YYYY-MM-DD');
             allDaysInMonth.push({
                 date: dayString,
-                income: donorDailyIncome[dayString] || 0
+                donorIncome: donorDailyIncome[dayString] || 0,
+                submitIncome: submitDailyIncome[dayString] || 0  // Add submit income for each day
             });
         }
 
@@ -581,12 +583,19 @@ exports.getCompletedRequestPercentages = async (req, res) => {
                 totalCompleted: totalDonorCompleted,
                 itemPercentages: donorItemPercentages,
                 totalMoney: donorTotalMoney,
-                dailyIncome: allDaysInMonth
+                dailyIncome: allDaysInMonth.map(day => ({
+                    date: day.date,
+                    income: day.donorIncome
+                }))
             },
             submitRequest: {
                 totalCompleted: totalSubmitCompleted,
                 itemPercentages: submitItemPercentages,
                 totalMoney: submitTotalMoney,
+                dailyIncome: allDaysInMonth.map(day => ({
+                    date: day.date,
+                    income: day.submitIncome  // Include submit income for daily income
+                }))
             }
         };
 
@@ -600,7 +609,6 @@ exports.getCompletedRequestPercentages = async (req, res) => {
         res.status(500).json({ message: 'An error occurred while processing the request.' });
     }
 };
-
 
 
 exports.dailyUsers = async (req, res) => {
