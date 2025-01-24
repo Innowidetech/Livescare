@@ -118,7 +118,7 @@ exports.getItems = async (req, res) => {
         }
 
         const loggedinuser = await User.findById(loggedinid);
-        if (!loggedinuser && (loggedinuser.role !== 'admin' || loggedinuser.role !=='member')) {
+        if (!loggedinuser && (loggedinuser.role !== 'admin' || loggedinuser.role !== 'member')) {
             return res.status(404).json({ message: "Only admin and members can access." })
         }
 
@@ -365,7 +365,7 @@ exports.getDonorRequests = async (req, res) => {
 
         const selectedFields = donors.map(donor => {
             const result = {
-                id:donor._id,
+                id: donor._id,
                 name: donor.name,
                 itemName: donor.itemName,
                 count: donor.count,
@@ -467,8 +467,8 @@ exports.getCompletedRequestPercentages = async (req, res) => {
         const queryMonth = month || (currentDate.getMonth() + 1).toString().padStart(2, '0');
         const queryYear = year || currentDate.getFullYear().toString();
 
-        const startOfMonth = moment(`${queryYear}-${queryMonth}-01`).startOf('month').toDate();
-        const endOfMonth = moment(`${queryYear}-${queryMonth}-01`).endOf('month').toDate();
+        const startOfMonth = moment(`${queryYear}-${queryMonth}-01T00:00:00Z`).startOf('month').toDate();
+        const endOfMonth = moment(`${queryYear}-${queryMonth}-01T23:59:59Z`).endOf('month').toDate();
 
         const itemNames = ['Food', 'Clothes', 'Books', 'Medical', 'Toys', 'Games Kit', 'Money', 'Others'];
 
@@ -761,7 +761,7 @@ exports.updateSubmitRequestStatus = async (req, res) => {
         }
 
         const loggedinuser = await User.findById(loggedinid);
-        if (!loggedinuser && (loggedinuser.role !== 'admin' || loggedinuser.role !=='member')) {
+        if (!loggedinuser && (loggedinuser.role !== 'admin' || loggedinuser.role !== 'member')) {
             return res.status(404).json({ message: "Only admin or member can update." })
         }
 
@@ -770,7 +770,7 @@ exports.updateSubmitRequestStatus = async (req, res) => {
             return res.status(404).json({ message: "No submit request found with the provided id." })
         }
 
-        const admin = await User.findOne({role:'admin'})
+        const admin = await User.findOne({ role: 'admin' })
 
         const member = await User.findOne({ pincode: submits.pincode, role: 'member' });
         if (!member) {
@@ -793,8 +793,8 @@ exports.updateSubmitRequestStatus = async (req, res) => {
         const pincode = submits.pincode
 
         await sendEmailToAdmin(process.env.EMAIL_ID, process.env.EMAIL_ID, `Submit Request Status Update - Livescare`, updateRequestStatusTemplate(nameAdmin, item, oldStatus, newStatus, updatedBy, state, city, address, pincode));
-        await sendEmailToAdmin(member.email, process.env.EMAIL_ID, `Submit Request Status Update - Livescare`, updateRequestStatusTemplate(nameMember, item, oldStatus,newStatus, updatedBy, state, city, address, pincode));
-        await sendEmailToUser(submits.email, process.env.EMAIL_ID, `Submit Request Status Update - Livescare`, updateRequestStatusTemplate(nameUser, item, oldStatus,newStatus, updatedBy, state, city, address, pincode));
+        await sendEmailToAdmin(member.email, process.env.EMAIL_ID, `Submit Request Status Update - Livescare`, updateRequestStatusTemplate(nameMember, item, oldStatus, newStatus, updatedBy, state, city, address, pincode));
+        await sendEmailToUser(submits.email, process.env.EMAIL_ID, `Submit Request Status Update - Livescare`, updateRequestStatusTemplate(nameUser, item, oldStatus, newStatus, updatedBy, state, city, address, pincode));
 
         res.status(201).json({ message: 'Submit Requests status updated successfully.', submits })
     }
@@ -816,7 +816,7 @@ exports.updateDonorRequestStatus = async (req, res) => {
         }
 
         const loggedinuser = await User.findById(loggedinid);
-        if (!loggedinuser && (loggedinuser.role !== 'admin' || loggedinuser.role !=='member')) {
+        if (!loggedinuser && (loggedinuser.role !== 'admin' || loggedinuser.role !== 'member')) {
             return res.status(404).json({ message: "Only admin  or member can update." })
         }
 
@@ -825,7 +825,7 @@ exports.updateDonorRequestStatus = async (req, res) => {
             return res.status(404).json({ message: "No donor request found with the provided id." })
         }
 
-        const admin = await User.findOne({role:'admin'})
+        const admin = await User.findOne({ role: 'admin' })
 
         const member = await User.findOne({ pincode: donor.pincode, role: 'member' });
         if (!member) {
@@ -849,8 +849,8 @@ exports.updateDonorRequestStatus = async (req, res) => {
         const pincode = donor.pincode
 
         await sendEmailToAdmin(process.env.EMAIL_ID, process.env.EMAIL_ID, `Donor Request Status Update - Livescare`, updateDonorStatusTemplate(nameAdmin, item, count, oldStatus, newStatus, updatedBy, state, city, address, pincode));
-        await sendEmailToAdmin(member.email, process.env.EMAIL_ID, `Donor Request Status Update - Livescare`, updateDonorStatusTemplate(nameMember, item, count, oldStatus,newStatus, updatedBy, state, city, address, pincode));
-        await sendEmailToUser(donor.email, process.env.EMAIL_ID, `Donor Request Status Update - Livescare`, updateDonorStatusTemplate(nameUser, item, count, oldStatus,newStatus, updatedBy, state, city, address, pincode));
+        await sendEmailToAdmin(member.email, process.env.EMAIL_ID, `Donor Request Status Update - Livescare`, updateDonorStatusTemplate(nameMember, item, count, oldStatus, newStatus, updatedBy, state, city, address, pincode));
+        await sendEmailToUser(donor.email, process.env.EMAIL_ID, `Donor Request Status Update - Livescare`, updateDonorStatusTemplate(nameUser, item, count, oldStatus, newStatus, updatedBy, state, city, address, pincode));
 
         res.status(201).json({ message: 'Donor Requests status updated successfully.', donor })
     }
@@ -925,7 +925,7 @@ exports.getCertificates = async (req, res) => {
             certificates = await Certificate.find().populate('donationId').sort({ createdAt: -1 });
         } else if (loggedinuser.role === 'member') {
             certificates = await Certificate.find().populate('donationId').sort({ createdAt: -1 });
-            certificates = certificates.filter( cert => cert.donationId && cert.donationId.pincode === loggedinuser.pincode );
+            certificates = certificates.filter(cert => cert.donationId && cert.donationId.pincode === loggedinuser.pincode);
         } else {
             return res.status(403).json({ message: 'Access denied. Only admins or members can access.' });
         }
@@ -944,15 +944,15 @@ exports.getCertificates = async (req, res) => {
 
 exports.editCertificate = async (req, res) => {
     try {
-        const {certificateId} = req.params;
-        const {newDonorName, newDonationId, newIssuedDate} = req.body;
+        const { certificateId } = req.params;
+        const { newDonorName, newDonationId, newIssuedDate } = req.body;
 
-        if(!certificateId){
-            return res.status(400).json({message:"Please provide certificate id."})
+        if (!certificateId) {
+            return res.status(400).json({ message: "Please provide certificate id." })
         }
         const certificate = await Certificate.findById(certificateId);
-        if(!certificate){
-            return res.status(404).json({message:'No certificate found with given id.'})
+        if (!certificate) {
+            return res.status(404).json({ message: 'No certificate found with given id.' })
         }
 
         if (!newDonorName && !newDonationId && !newIssuedDate) {
@@ -988,9 +988,9 @@ exports.editCertificate = async (req, res) => {
 
 exports.deleteCertificate = async (req, res) => {
     try {
-        const {certificateId} = req.params;
-        if(!certificateId){
-            return res.status(400).json({message:"Please provide certificate id."})
+        const { certificateId } = req.params;
+        if (!certificateId) {
+            return res.status(400).json({ message: "Please provide certificate id." })
         }
 
         const loggedinid = req.user && req.user.id;
@@ -1004,11 +1004,11 @@ exports.deleteCertificate = async (req, res) => {
         }
 
         const certificate = await Certificate.findByIdAndDelete(certificateId);
-        if(!certificate){
-            return res.status(404).json({message:'No certificate found with given id.'})
+        if (!certificate) {
+            return res.status(404).json({ message: 'No certificate found with given id.' })
         }
 
-        res.status(201).json({ message: `Certificate deleted successfully.`})
+        res.status(201).json({ message: `Certificate deleted successfully.` })
     }
     catch (err) {
         return res.status(500).json({ message: 'Internal server error', error: err.message })
@@ -1016,11 +1016,11 @@ exports.deleteCertificate = async (req, res) => {
 };
 
 
-exports.createProgram = async(req,res)=>{
+exports.createProgram = async (req, res) => {
     try {
-        const {date, title, location, time, description} = req.body;
-        if(!date || !title || !location || !time || !description){
-            return res.status(400).json({message:"Please provide all the details to post new program."})
+        const { date, title, location, time, description } = req.body;
+        if (!date || !title || !location || !time || !description) {
+            return res.status(400).json({ message: "Please provide all the details to post new program." })
         }
 
         const loggedinid = req.user && req.user.id;
@@ -1043,10 +1043,10 @@ exports.createProgram = async(req,res)=>{
             }
         };
 
-        const newProgram = new Program({title, location, date, time, description, image:photo});
+        const newProgram = new Program({ title, location, date, time, description, image: photo });
         await newProgram.save()
 
-        res.status(201).json({ message: `New Program created successfully.`, newProgram})
+        res.status(201).json({ message: `New Program created successfully.`, newProgram })
     }
     catch (err) {
         return res.status(500).json({ message: 'Internal server error', error: err.message })
@@ -1054,7 +1054,7 @@ exports.createProgram = async(req,res)=>{
 };
 
 
-exports.getProgramsForAdmin = async(req,res)=>{
+exports.getProgramsForAdmin = async (req, res) => {
     try {
         const loggedinid = req.user && req.user.id;
         if (!loggedinid) {
@@ -1067,11 +1067,11 @@ exports.getProgramsForAdmin = async(req,res)=>{
         }
 
         const programs = await Program.find().sort({ date: 1 });
-        if(!programs.length){
-            return res.status(404).json({message:"No programs found."})
+        if (!programs.length) {
+            return res.status(404).json({ message: "No programs found." })
         }
 
-        res.status(200).json({ message: `Programs fetched successfully.`, programs})
+        res.status(200).json({ message: `Programs fetched successfully.`, programs })
     }
     catch (err) {
         return res.status(500).json({ message: 'Internal server error', error: err.message })
@@ -1079,11 +1079,11 @@ exports.getProgramsForAdmin = async(req,res)=>{
 };
 
 
-exports.deleteProgram = async(req,res)=>{
+exports.deleteProgram = async (req, res) => {
     try {
-        const {programId} = req.params
-        if(!programId){
-            return res.status(400).json({message:"Please provide program id."})
+        const { programId } = req.params
+        if (!programId) {
+            return res.status(400).json({ message: "Please provide program id." })
         }
 
         const loggedinid = req.user && req.user.id;
@@ -1097,11 +1097,11 @@ exports.deleteProgram = async(req,res)=>{
         }
 
         const program = await Program.findByIdAndDelete(programId);
-        if(!program){
-            return res.status(404).json({message:"No program found with the id."})
+        if (!program) {
+            return res.status(404).json({ message: "No program found with the id." })
         }
 
-        res.status(200).json({ message: `Program deleted successfully.`})
+        res.status(200).json({ message: `Program deleted successfully.` })
     }
     catch (err) {
         return res.status(500).json({ message: 'Internal server error', error: err.message })
@@ -1117,7 +1117,7 @@ exports.postBlog = async (req, res) => {
         }
 
         const sanitizedDescription = sanitizeHtml(description);
-        
+
         const loggedinid = req.user && req.user.id;
         if (!loggedinid) {
             return res.status(401).json({ message: 'Unauthorized.' })
@@ -1138,7 +1138,7 @@ exports.postBlog = async (req, res) => {
             }
         };
 
-        const newBlog = new Blog({title, tags, description:sanitizedDescription, image:photo});
+        const newBlog = new Blog({ title, tags, description: sanitizedDescription, image: photo });
 
         await newBlog.save()
 
@@ -1150,11 +1150,11 @@ exports.postBlog = async (req, res) => {
 };
 
 
-exports.getBlogs = async(req,res)=>{
+exports.getBlogs = async (req, res) => {
     try {
-        const blogs = await Blog.find().sort({createdAt:-1})
-        if(!blogs.length){
-            return res.status(404).json({message:'No blogs found.'})
+        const blogs = await Blog.find().sort({ createdAt: -1 })
+        if (!blogs.length) {
+            return res.status(404).json({ message: 'No blogs found.' })
         }
         res.status(201).json({ message: 'Blogs fetched successfully.', blogs })
     }
@@ -1164,16 +1164,16 @@ exports.getBlogs = async(req,res)=>{
 };
 
 
-exports.getBlogById = async(req,res)=>{
+exports.getBlogById = async (req, res) => {
     try {
-        const {blogId} = req.params;
-        if(!blogId){
-            return res.status(400).json({message:"Provide the blog id."})
+        const { blogId } = req.params;
+        if (!blogId) {
+            return res.status(400).json({ message: "Provide the blog id." })
         }
 
         const blog = await Blog.findById(blogId)
-        if(!blog){
-            return res.status(404).json({message:'No blog found with the id.'})
+        if (!blog) {
+            return res.status(404).json({ message: 'No blog found with the id.' })
         }
         res.status(201).json({ message: 'Blog fetched successfully.', blog })
     }
@@ -1186,9 +1186,9 @@ exports.getBlogById = async(req,res)=>{
 exports.editBlog = async (req, res) => {
     try {
         const { newTitle, newTags, newDescription } = req.body;
-        const {blogId} = req.params;
-        if(!blogId){
-            return res.status(400).json({message:"Provide the blogId to edit."})
+        const { blogId } = req.params;
+        if (!blogId) {
+            return res.status(400).json({ message: "Provide the blogId to edit." })
         }
 
         const loggedinid = req.user && req.user.id;
@@ -1202,13 +1202,13 @@ exports.editBlog = async (req, res) => {
         }
 
         const blog = await Blog.findById(blogId)
-        if(!blog){
-            return res.status(404).json({message:"No blog found with the id."})
+        if (!blog) {
+            return res.status(404).json({ message: "No blog found with the id." })
         }
 
         let sanitizedDescription = blog.description
 
-        if(newDescription){
+        if (newDescription) {
             sanitizedDescription = sanitizeHtml(newDescription);
         }
 
@@ -1238,11 +1238,11 @@ exports.editBlog = async (req, res) => {
 };
 
 
-exports.deleteBlog = async(req,res)=>{
+exports.deleteBlog = async (req, res) => {
     try {
-        const {blogId} = req.params;
-        if(!blogId){
-            return res.status(400).json({message:"Provide the blogId to edit."})
+        const { blogId } = req.params;
+        if (!blogId) {
+            return res.status(400).json({ message: "Provide the blogId to edit." })
         }
 
         const loggedinid = req.user && req.user.id;
@@ -1256,8 +1256,8 @@ exports.deleteBlog = async(req,res)=>{
         }
 
         const blog = await Blog.findByIdAndDelete(blogId)
-        if(!blog){
-            return res.status(404).json({message:"No blog found with the id."})
+        if (!blog) {
+            return res.status(404).json({ message: "No blog found with the id." })
         }
 
         res.status(201).json({ message: 'Blog deleted successfully.' })
