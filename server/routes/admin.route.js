@@ -27,7 +27,7 @@ router.get('/certificate', protect, getCertificates);
 router.post('/certificate/:certificateId', protect, editCertificate);
 router.delete('/certificate/:certificateId', protect, deleteCertificate);
 router.get('/getCounts', protect, getAllCounts);
-router.post('/program', protect, createProgram);
+router.post('/program', protect, upload.single('photo'), createProgram);
 router.get('/program', protect, getProgramsForAdmin);
 router.delete('/program/:programId', protect, deleteProgram);
 router.post('/blog',protect, upload.single('photo'), postBlog)

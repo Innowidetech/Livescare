@@ -495,10 +495,24 @@ exports.getCompletedRequestPercentages = async (req, res) => {
         const getTotalMoney = (requests) => {
             return requests.reduce((total, request) => {
                 if (request.itemName === 'Money' && request.amount) {
-                    total += request.amount; // Assuming 'amount' is the field for money
+                    total += request.amount;
                 }
                 return total;
             }, 0);
+        };
+
+        const getDailyIncome = (requests) => {
+            const dailyIncome = {};
+            requests.forEach(request => {
+                const day = moment(request.createdAt).format('YYYY-MM-DD');
+                if (!dailyIncome[day]) {
+                    dailyIncome[day] = 0;
+                }
+                if (request.itemName === 'Money' && request.amount) {
+                    dailyIncome[day] += request.amount;
+                }
+            });
+            return dailyIncome;
         };
 
         let donorCompletedRequests = [];
@@ -550,23 +564,34 @@ exports.getCompletedRequestPercentages = async (req, res) => {
         const donorItemPercentages = calculatePercentages(donorItemCounts, totalDonorCompleted);
         const submitItemPercentages = calculatePercentages(submitItemCounts, totalSubmitCompleted);
 
+        const donorDailyIncome = getDailyIncome(donorCompletedRequests);
+
+        const allDaysInMonth = [];
+        const daysInMonth = moment(`${queryYear}-${queryMonth}`, 'YYYY-MM').daysInMonth();
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayString = moment(`${queryYear}-${queryMonth}-${day.toString().padStart(2, '0')}`).format('YYYY-MM-DD');
+            allDaysInMonth.push({
+                date: dayString,
+                income: donorDailyIncome[dayString] || 0
+            });
+        }
+
         const responseData = {
             donorRequest: {
                 totalCompleted: totalDonorCompleted,
-                //   itemCounts: donorItemCounts,
                 itemPercentages: donorItemPercentages,
                 totalMoney: donorTotalMoney,
+                dailyIncome: allDaysInMonth
             },
             submitRequest: {
                 totalCompleted: totalSubmitCompleted,
-                //   itemCounts: submitItemCounts,
                 itemPercentages: submitItemPercentages,
                 totalMoney: submitTotalMoney,
             }
         };
 
         res.status(200).json({
-            message: 'Item counts and percentages for DonorRequest and SubmitRequest by month and year.',
+            message: 'Item counts, percentages, and daily income for DonorRequest and SubmitRequest by month and year.',
             data: responseData
         });
 
@@ -575,6 +600,7 @@ exports.getCompletedRequestPercentages = async (req, res) => {
         res.status(500).json({ message: 'An error occurred while processing the request.' });
     }
 };
+
 
 
 exports.dailyUsers = async (req, res) => {
@@ -982,9 +1008,9 @@ exports.deleteCertificate = async (req, res) => {
 
 exports.createProgram = async(req,res)=>{
     try {
-        const {date, title} = req.body;
-        if(!date || !title){
-            return res.status(400).json({message:"Please provide date and title to post new program."})
+        const {date, title, location, time, description} = req.body;
+        if(!date || !title || !location || !time || !description){
+            return res.status(400).json({message:"Please provide all the details to post new program."})
         }
 
         const loggedinid = req.user && req.user.id;
@@ -997,7 +1023,17 @@ exports.createProgram = async(req,res)=>{
             return res.status(404).json({ message: "Only admin can access." })
         }
 
-        const newProgram = new Program({date,title});
+        let photo;
+        if (req.file) {
+            try {
+                const [photoUrl] = await uploadImage(req.file);
+                photo = photoUrl;
+            } catch (error) {
+                return res.status(500).json({ message: 'Failed to upload image.', error: error.message });
+            }
+        };
+
+        const newProgram = new Program({title, location, date, time, description, image:photo});
         await newProgram.save()
 
         res.status(201).json({ message: `New Program created successfully.`, newProgram})
