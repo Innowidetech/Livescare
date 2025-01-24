@@ -1,6 +1,6 @@
 const Stripe = require('stripe');
-const { Payment } = require('../models/Payment');
-
+const Payment = require('../models/Payment');
+const DonorRequest = require('../models/DonorRequest');
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 exports.createPaymentOrder = async (req, res, amount) => {
@@ -33,7 +33,7 @@ exports.createPaymentOrder = async (req, res, amount) => {
 };
 
 exports.verifyPayment = async (req, res) => {
-    const { paymentIntentId, paymentSignature } = req.body;
+    const { paymentIntentId, paymentSignature,donorRequestData } = req.body;
 
     try {
         const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
@@ -62,8 +62,10 @@ exports.verifyPayment = async (req, res) => {
 
         paymentOrder.paymentStatus = "success";
         paymentOrder.paymentSignatureVerified = true;
-
         await paymentOrder.save();
+
+        const newDonorRequest = new DonorRequest(donorRequestData);
+        await newDonorRequest.save();
 
         return res.status(200).json({
             message: "Payment verified successfully.",

@@ -22,6 +22,13 @@ const DonorRequestSchema = new mongoose.Schema({
             return this.itemName === 'Money';
         },
     },
+    paymentMethod:{
+        type:String,
+        required:function(){
+            return this.itemName === 'Money'
+        },
+        enum:['Online', 'Offline']
+    },
     mobileNumber: {
         type: String,
         required: true,

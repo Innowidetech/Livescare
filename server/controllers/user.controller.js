@@ -81,9 +81,10 @@ exports.submitRequest = async (req, res) => {
 
 exports.donorRequest = async (req, res) => {
     try {
-        const { name, itemName, count, mobileNumber, email, state, city, address, pincode, description, amount } = req.body;
+        const { name, itemName, count, amount, mobileNumber, email, state, city, address, pincode, description, paymentMethod } = req.body;
+
         if (!name || !itemName || !mobileNumber || !email || !state || !city || !address || !pincode) {
-            return res.status(400).json({ message: "Provide all the details to submit the form." })
+            return res.status(400).json({ message: "Provide all the details to submit the form." });
         }
 
         if (itemName === 'Money') {
@@ -91,25 +92,61 @@ exports.donorRequest = async (req, res) => {
                 return res.status(400).json({ message: "Amount must be provided and greater than 0 for money donations." });
             }
 
-            const paymentResponse = await createPaymentOrder(req, res, amount);
-            if (!paymentResponse.success) {
-                return res.status(500).json({ message: "Error creating payment order." });
+            if (paymentMethod === 'Offline') {
+                const newDonorRequest = new DonorRequest({
+                    name,
+                    itemName,
+                    amount,
+                    paymentMethod,
+                    mobileNumber,
+                    email,
+                    state,
+                    city,
+                    address,
+                    pincode,
+                    description,
+                });
+                await newDonorRequest.save();
+                return res.status(201).json({
+                    message: 'Donor Request Form submitted successfully. Our team will reach out to you.',
+                });
             }
+
+            if (paymentMethod === 'Online') {
+                const paymentResponse = await createPaymentOrder(req, res, amount);
+                if (!paymentResponse.success) {
+                    return res.status(500).json({ message: "Error creating payment order." });
+                }
+
+                return res.status(200).json({
+                    message: "Payment initiated successfully. Please complete the payment.",
+                    clientSecret: paymentResponse.clientSecret,
+                });
+            }
+        } else {
+            const newDonorRequest = new DonorRequest({
+                name,
+                itemName,
+                count,
+                mobileNumber,
+                email,
+                state,
+                city,
+                address,
+                pincode,
+                description,
+            });
+            await newDonorRequest.save();
+
+            res.status(201).json({
+                message: 'Donor Request Form submitted successfully. Our team will reach out to you.',
+            });
         }
-
-        const newDonorRequest = new DonorRequest({ name, itemName, count, amount, mobileNumber, email, state, city, address, pincode, description });
-        await newDonorRequest.save()
-
-        // await sendEmailToAdmin(process.env.EMAIL_ID, email, `Donor Request Form - Livescare by ${name}`, contactUsTemplate(name, itemName, count, mobileNumber, email, state, city, address, pincode, description));
-
-        res.status(201).json({
-            message: 'Donor Request Form submitted successfully, our team will reach out you via provided Mobile Number or Email.',
-        });
-    }
-    catch (err) {
-        res.status(404).json({ message: 'Internal server error.', error: err.message })
+    } catch (err) {
+        res.status(404).json({ message: 'Internal server error.', error: err.message });
     }
 };
+
 
 
 exports.subscribe = async (req, res) => {
