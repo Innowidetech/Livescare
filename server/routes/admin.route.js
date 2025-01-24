@@ -1,6 +1,6 @@
 const express = require('express');
 const { protect } = require('../middleware/auth.middleware');
-const { createItem, editItem, deleteItem, registration, getItems, getMembers, getSubmitRequests, getDonorRequests, getProfile, getCompletedRequestPercentages, dailyUsers, updateDonorRequestStatus, updateSubmitRequestStatus, createCertificate, getCertificates, editCertificate, deleteCertificate, getAllCounts, createProgram, getProgramsForAdmin, deleteProgram } = require('../controllers/admin.controller');
+const { createItem, editItem, deleteItem, registration, getItems, getMembers, getSubmitRequests, getDonorRequests, getProfile, getCompletedRequestPercentages, dailyUsers, updateDonorRequestStatus, updateSubmitRequestStatus, createCertificate, getCertificates, editCertificate, deleteCertificate, getAllCounts, createProgram, getProgramsForAdmin, deleteProgram, postBlog, getBlogs, editBlog, deleteBlog, getBlogById } = require('../controllers/admin.controller');
 const { editProfile } = require('../controllers/member.controller');
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
@@ -30,5 +30,10 @@ router.get('/getCounts', protect, getAllCounts);
 router.post('/program', protect, createProgram);
 router.get('/program', protect, getProgramsForAdmin);
 router.delete('/program/:programId', protect, deleteProgram);
+router.post('/blog',protect, upload.single('photo'), postBlog)
+router.get('/blog',getBlogs);
+router.get('/blog/:blogId', getBlogById);
+router.post('/blog/:blogId', protect, upload.single('photo'), editBlog);
+router.delete('/blog/:blogId', protect, deleteBlog);
 
 module.exports = router;

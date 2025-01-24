@@ -190,3 +190,64 @@ exports.getPrograms = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error', error: err.message })
     }
 };
+
+
+exports.getSpentDonationsPercentages = async (req, res) => {
+    try {
+        const itemNames = ['Food', 'Clothes', 'Books', 'Medical', 'Toys', 'Games Kit', 'Money', 'Others'];
+
+        const getItemCounts = (requests) => {
+            const counts = {
+                'Food': 0,
+                'Clothes': 0,
+                'Books': 0,
+                'Medical': 0,
+                'Toys': 0,
+                'Games Kit': 0,
+                'Money': 0,
+                'Others': 0
+            };
+
+            requests.forEach(request => {
+                if (itemNames.includes(request.itemName)) {
+                    counts[request.itemName]++;
+                }
+            });
+            return counts;
+        };
+
+        const submitCompletedRequests = await SubmitRequest.find({
+            status: 'Completed'
+        });
+
+        const submitItemCounts = getItemCounts(submitCompletedRequests);
+
+        const totalSubmitCompleted = submitCompletedRequests.length;
+
+        const calculatePercentages = (itemCounts, totalCompleted) => {
+            return itemNames.reduce((acc, itemName) => {
+                const count = itemCounts[itemName];
+                acc[itemName] = totalCompleted > 0 ? ((count / totalCompleted) * 100).toFixed(2) : 0;
+                return acc;
+            }, {});
+        };
+
+        const submitItemPercentages = calculatePercentages(submitItemCounts, totalSubmitCompleted);
+
+        const responseData = {
+            submitRequest: {
+                // totalCompleted: totalSubmitCompleted,
+                itemPercentages: submitItemPercentages,
+            }
+        };
+
+        res.status(200).json({
+            message: 'Item counts and percentages for SubmitRequest.',
+            data: responseData
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while processing the request.' });
+    }
+};

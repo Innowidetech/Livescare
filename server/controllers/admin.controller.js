@@ -11,7 +11,8 @@ const moment = require('moment');
 const Certificate = require('../models/Certificate');
 const { uploadImage } = require('../utils/multer');
 const Program = require('../models/OurPrograms');
-
+const Blog = require('../models/Blog');
+const sanitizeHtml = require('sanitize-html')
 
 exports.registration = async (req, res) => {
     try {
@@ -79,7 +80,7 @@ exports.getProfile = async (req, res) => {
 exports.createItem = async (req, res) => {
     try {
         const { itemName, count, status, amount } = req.body;
-        if (!itemName && !status) {
+        if (!itemName || !status) {
             return res.status(400).json({ message: 'Please provide all the details to add item.' })
         }
 
@@ -821,7 +822,7 @@ exports.createCertificate = async (req, res) => {
             return res.status(404).json({ message: "No donation request found with the provided id." })
         }
 
-        let photo = '';
+        let photo;
         if (req.file) {
             try {
                 const [photoUrl] = await uploadImage(req.file);
@@ -1041,6 +1042,165 @@ exports.deleteProgram = async(req,res)=>{
         }
 
         res.status(200).json({ message: `Program deleted successfully.`})
+    }
+    catch (err) {
+        return res.status(500).json({ message: 'Internal server error', error: err.message })
+    }
+};
+
+
+exports.postBlog = async (req, res) => {
+    try {
+        const { title, tags, description } = req.body;
+        if (!title || !description) {
+            return res.status(400).json({ message: 'Please provide all the details to post blog.' })
+        }
+
+        const sanitizedDescription = sanitizeHtml(description);
+        
+        const loggedinid = req.user && req.user.id;
+        if (!loggedinid) {
+            return res.status(401).json({ message: 'Unauthorized.' })
+        }
+
+        const loggedinuser = await User.findById(loggedinid);
+        if (!loggedinuser && loggedinuser.role !== 'admin') {
+            return res.status(404).json({ message: "Only admin can access." })
+        }
+
+        let photo;
+        if (req.file) {
+            try {
+                const [photoUrl] = await uploadImage(req.file);
+                photo = photoUrl;
+            } catch (error) {
+                return res.status(500).json({ message: 'Failed to upload image.', error: error.message });
+            }
+        };
+
+        const newBlog = new Blog({title, tags, description:sanitizedDescription, image:photo});
+
+        await newBlog.save()
+
+        res.status(201).json({ message: 'Blog posted successfully.', newBlog })
+    }
+    catch (err) {
+        return res.status(500).json({ message: 'Internal server error', error: err.message })
+    }
+};
+
+
+exports.getBlogs = async(req,res)=>{
+    try {
+        const blogs = await Blog.find().sort({createdAt:-1})
+        if(!blogs.length){
+            return res.status(404).json({message:'No blogs found.'})
+        }
+        res.status(201).json({ message: 'Blogs fetched successfully.', blogs })
+    }
+    catch (err) {
+        return res.status(500).json({ message: 'Internal server error', error: err.message })
+    }
+};
+
+
+exports.getBlogById = async(req,res)=>{
+    try {
+        const {blogId} = req.params;
+        if(!blogId){
+            return res.status(400).json({message:"Provide the blog id."})
+        }
+
+        const blog = await Blog.findById(blogId)
+        if(!blog){
+            return res.status(404).json({message:'No blog found with the id.'})
+        }
+        res.status(201).json({ message: 'Blog fetched successfully.', blog })
+    }
+    catch (err) {
+        return res.status(500).json({ message: 'Internal server error', error: err.message })
+    }
+};
+
+
+exports.editBlog = async (req, res) => {
+    try {
+        const { newTitle, newTags, newDescription } = req.body;
+        const {blogId} = req.params;
+        if(!blogId){
+            return res.status(400).json({message:"Provide the blogId to edit."})
+        }
+
+        const loggedinid = req.user && req.user.id;
+        if (!loggedinid) {
+            return res.status(401).json({ message: 'Unauthorized.' })
+        }
+
+        const loggedinuser = await User.findById(loggedinid);
+        if (!loggedinuser && loggedinuser.role !== 'admin') {
+            return res.status(404).json({ message: "Only admin can access." })
+        }
+
+        const blog = await Blog.findById(blogId)
+        if(!blog){
+            return res.status(404).json({message:"No blog found with the id."})
+        }
+
+        let sanitizedDescription = blog.description
+
+        if(newDescription){
+            sanitizedDescription = sanitizeHtml(newDescription);
+        }
+
+        let photo;
+        if (req.file) {
+            try {
+                const [photoUrl] = await uploadImage(req.file);
+                photo = photoUrl;
+            } catch (error) {
+                return res.status(500).json({ message: 'Failed to upload image.', error: error.message });
+            }
+        };
+        newPhoto = photo;
+
+        blog.title = newTitle || blog.title;
+        blog.tags = newTags || blog.tags;
+        blog.description = sanitizedDescription;
+        blog.image = newPhoto || blog.image;
+
+        await blog.save()
+
+        res.status(201).json({ message: 'Blog updated successfully.', blog })
+    }
+    catch (err) {
+        return res.status(500).json({ message: 'Internal server error', error: err.message })
+    }
+};
+
+
+exports.deleteBlog = async(req,res)=>{
+    try {
+        const {blogId} = req.params;
+        if(!blogId){
+            return res.status(400).json({message:"Provide the blogId to edit."})
+        }
+
+        const loggedinid = req.user && req.user.id;
+        if (!loggedinid) {
+            return res.status(401).json({ message: 'Unauthorized.' })
+        }
+
+        const loggedinuser = await User.findById(loggedinid);
+        if (!loggedinuser && loggedinuser.role !== 'admin') {
+            return res.status(404).json({ message: "Only admin can access." })
+        }
+
+        const blog = await Blog.findByIdAndDelete(blogId)
+        if(!blog){
+            return res.status(404).json({message:"No blog found with the id."})
+        }
+
+        res.status(201).json({ message: 'Blog deleted successfully.' })
     }
     catch (err) {
         return res.status(500).json({ message: 'Internal server error', error: err.message })
