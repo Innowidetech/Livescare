@@ -35,6 +35,7 @@ exports.login = async(req,res)=>{
             username:user.username,
             email:user.email,
             designation:user.designation,
+            role:user.role,
             token
         });
     }
