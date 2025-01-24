@@ -565,7 +565,7 @@ exports.getCompletedRequestPercentages = async (req, res) => {
         const submitItemPercentages = calculatePercentages(submitItemCounts, totalSubmitCompleted);
 
         const donorDailyIncome = getDailyIncome(donorCompletedRequests);
-        const submitDailyIncome = getDailyIncome(submitCompletedRequests);  // New addition
+        const submitDailyIncome = getDailyIncome(submitCompletedRequests);
 
         const allDaysInMonth = [];
         const daysInMonth = moment(`${queryYear}-${queryMonth}`, 'YYYY-MM').daysInMonth();
@@ -574,13 +574,14 @@ exports.getCompletedRequestPercentages = async (req, res) => {
             allDaysInMonth.push({
                 date: dayString,
                 donorIncome: donorDailyIncome[dayString] || 0,
-                submitIncome: submitDailyIncome[dayString] || 0  // Add submit income for each day
+                submitIncome: submitDailyIncome[dayString] || 0
             });
         }
 
         const responseData = {
             donorRequest: {
                 totalCompleted: totalDonorCompleted,
+                itemCounts: donorItemCounts,
                 itemPercentages: donorItemPercentages,
                 totalMoney: donorTotalMoney,
                 dailyIncome: allDaysInMonth.map(day => ({
@@ -590,11 +591,12 @@ exports.getCompletedRequestPercentages = async (req, res) => {
             },
             submitRequest: {
                 totalCompleted: totalSubmitCompleted,
+                itemCounts: submitItemCounts,
                 itemPercentages: submitItemPercentages,
                 totalMoney: submitTotalMoney,
                 dailyIncome: allDaysInMonth.map(day => ({
                     date: day.date,
-                    income: day.submitIncome  // Include submit income for daily income
+                    income: day.submitIncome
                 }))
             }
         };
