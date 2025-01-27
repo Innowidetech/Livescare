@@ -467,8 +467,11 @@ exports.getCompletedRequestPercentages = async (req, res) => {
         const queryMonth = month || (currentDate.getMonth() + 1).toString().padStart(2, '0');
         const queryYear = year || currentDate.getFullYear().toString();
 
-        const startOfMonth = moment(`${queryYear}-${queryMonth}-01T00:00:00Z`).startOf('month').toDate();
-        const endOfMonth = moment(`${queryYear}-${queryMonth}-01T23:59:59Z`).endOf('month').toDate();
+        const sanitizedYear = queryYear.padStart(4, '0');
+        const sanitizedMonth = queryMonth.padStart(2, '0');
+
+        const startOfMonth = moment(`${sanitizedYear}-${sanitizedMonth}-01T00:00:00Z`).startOf('month').toDate();
+        const endOfMonth = moment(`${sanitizedYear}-${sanitizedMonth}-01T23:59:59Z`).endOf('month').toDate();
 
         const itemNames = ['Food', 'Clothes', 'Books', 'Medical', 'Toys', 'Games Kit', 'Money', 'Others'];
 
@@ -1072,6 +1075,25 @@ exports.getProgramsForAdmin = async (req, res) => {
         }
 
         res.status(200).json({ message: `Programs fetched successfully.`, programs })
+    }
+    catch (err) {
+        return res.status(500).json({ message: 'Internal server error', error: err.message })
+    }
+};
+
+
+exports.getProgramsById = async (req, res) => {
+    try {
+        const {programId} = req.params;
+        if(!programId){
+            return res.status(404).json({message:"Provide the program id."})
+        }
+        const programs = await Program.findById(programId);
+        if (!programs) {
+            return res.status(404).json({ message: "No program found with the id." })
+        }
+
+        res.status(200).json({ message: `Program fetched successfully.`, programs })
     }
     catch (err) {
         return res.status(500).json({ message: 'Internal server error', error: err.message })
