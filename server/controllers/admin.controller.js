@@ -571,9 +571,9 @@ exports.getCompletedRequestPercentages = async (req, res) => {
         const submitDailyIncome = getDailyIncome(submitCompletedRequests);
 
         const allDaysInMonth = [];
-        const daysInMonth = moment(`${queryYear}-${queryMonth}`, 'YYYY-MM').daysInMonth();
+        const daysInMonth = moment(`${sanitizedYear}-${sanitizedMonth}`, 'YYYY-MM').daysInMonth();
         for (let day = 1; day <= daysInMonth; day++) {
-            const dayString = moment(`${queryYear}-${queryMonth}-${day.toString().padStart(2, '0')}`).format('YYYY-MM-DD');
+            const dayString = moment(`${sanitizedYear}-${sanitizedMonth}-${day.toString().padStart(2, '0')}`).format('YYYY-MM-DD');
             allDaysInMonth.push({
                 date: dayString,
                 donorIncome: donorDailyIncome[dayString] || 0,
