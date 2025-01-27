@@ -944,6 +944,44 @@ exports.getCertificates = async (req, res) => {
 };
 
 
+exports.getCertificateById = async (req, res) => {
+    try {
+        const {certificateId} = req.params;
+        if(!certificateId){
+            return res.status(400).json({message:"Provide the certificate id."})
+        }
+
+        const loggedinid = req.user && req.user.id;
+        if (!loggedinid) {
+            return res.status(401).json({ message: 'Unauthorized.' });
+        }
+
+        const loggedinuser = await User.findById(loggedinid);
+        if (!loggedinuser) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        let certificates;
+
+        if (loggedinuser.role === 'admin') {
+            certificates = await Certificate.findById(certificateId).populate('donationId');
+        } else if (loggedinuser.role === 'member') {
+            certificates = await Certificate.find({ _id: certificateId }).populate('donationId');
+            certificates = certificates.filter(cert => cert.donationId && cert.donationId.pincode === loggedinuser.pincode);
+        } else {
+            return res.status(403).json({ message: 'Access denied. Only admins or members can access.' });
+        }
+
+        if (!certificates || !certificates.length) {
+            return res.status(404).json({ message: 'No certificate found with the id for this member.' });
+        }
+
+        res.status(200).json({ message: 'Certificate fetched successfully.', certificates });
+    } catch (err) {
+        return res.status(500).json({ message: 'Internal server error', error: err.message });
+    }
+};
+
 
 exports.editCertificate = async (req, res) => {
     try {
