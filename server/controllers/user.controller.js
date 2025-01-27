@@ -96,6 +96,12 @@ exports.donorRequest = async (req, res) => {
             return res.status(400).json({ message: "Provide all the details to submit the form." });
         }
 
+        if(itemName === 'Money'){
+            if(!paymentMethod){
+                return res.status(400).json({message:"Provide the payment method."})
+            }
+        }
+
         if (itemName === 'Money') {
             if (!amount || amount <= 0) {
                 return res.status(400).json({ message: "Amount must be provided and greater than 0 for money donations." });
