@@ -910,6 +910,31 @@ exports.createCertificate = async (req, res) => {
 };
 
 
+exports.getCompletedDonors = async(req,res)=>{
+    try {
+    const loggedinid = req.user && req.user.id;
+        if (!loggedinid) {
+            return res.status(401).json({ message: 'Unauthorized.' })
+        }
+
+        const loggedinuser = await User.findById(loggedinid);
+        if (!loggedinuser && loggedinuser.role !== 'admin') {
+            return res.status(404).json({ message: "Only admin can access." })
+        }
+
+        const donor = await DonorRequest.find({status:'Completed'}).sort({createdAt:-1});
+        if(!donor.length){
+            return res.status(404).json({message:"No donations completed."})
+        }
+
+        res.status(200).json({message:"Completed donor list.", donor})
+    }
+        catch (err) {
+            return res.status(500).json({ message: 'Internal server error', error: err.message })
+        }
+};
+
+
 exports.getCertificates = async (req, res) => {
     try {
         const loggedinid = req.user && req.user.id;
