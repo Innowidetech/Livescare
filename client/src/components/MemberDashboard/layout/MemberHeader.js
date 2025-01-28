@@ -1,0 +1,54 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
+const MemberHeader = () => {
+  const navigate = useNavigate();
+
+  const handleProfileClick = () => {
+    navigate('/member/profile');
+  };
+
+  return (
+    <header className="text-gray-800 p-4 flex justify-between items-center flex-wrap md:flex-nowrap -mt-10 md:-mt-0">
+      {/* Mobile: Logo */}
+      <div className="md:hidden flex items-center">
+        <img
+          src="/Assets/logo.png" 
+          alt="Logo"
+          className="h-8"
+        />
+      </div>
+
+      {/* Left Side for Desktop (Search Bar) */}
+      <div className="hidden md:flex items-center bg-gray-200 p-3 rounded-3xl w-1/3 mb-4 md:mb-0">
+        <i className="fas fa-search text-gray-600 mr-2"></i>
+        <input
+          type="text"
+          placeholder="Search..."
+          className="bg-transparent border-none outline-none text-gray-600 placeholder-gray-600 w-full"
+        />
+      </div>
+
+      {/* Right Side: Search Icon and Profile Button for Mobile and Desktop */}
+      <div className="flex items-center">
+        {/* Mobile: Search Icon and Profile Button */}
+        <div className="md:hidden flex items-center mr-4">
+          <i className="fas fa-search text-gray-600"></i>
+        </div>
+
+        {/* Desktop: Profile Button */}
+        <div className="flex items-center ml-4">
+          <button 
+            onClick={handleProfileClick}
+            className="text-gray-600 px-4 py-2 rounded-lg flex items-center hover:bg-gray-100 transition-colors duration-200"
+          >
+            <i className="fas fa-user mr-2 bg-gray-200 p-3 rounded-full"></i>
+            <span className="hidden md:inline-block">Kreethi</span>
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default MemberHeader;
