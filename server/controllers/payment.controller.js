@@ -3,7 +3,7 @@ const Payment = require('../models/Payment');
 const DonorRequest = require('../models/DonorRequest');
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-exports.createPaymentOrder = async (req, res, amount) => {
+exports.createPaymentOrder = async (req, res, amount, donorRequestData) => {
     try {
         const paymentIntent = await stripe.paymentIntents.create({
             amount: amount * 100,
@@ -17,6 +17,7 @@ exports.createPaymentOrder = async (req, res, amount) => {
             paymentStatus: "pending",
             paymentSignature: paymentIntent.client_secret,
             paymentSignatureVerified: false,
+            donorRequestData: donorRequestData,
         });
 
         return res.status(201).json({
@@ -33,7 +34,7 @@ exports.createPaymentOrder = async (req, res, amount) => {
 };
 
 exports.verifyPayment = async (req, res) => {
-    const { paymentIntentId, paymentSignature, donorRequestData } = req.body;
+    const { paymentIntentId, paymentSignature } = req.body;
 
     try {
         const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
@@ -64,8 +65,9 @@ exports.verifyPayment = async (req, res) => {
         paymentOrder.paymentSignatureVerified = true;
         await paymentOrder.save();
 
-        const newDonorRequest = new DonorRequest(donorRequestData);
-        await newDonorRequest.save();
+        const donorRequest = new DonorRequest(paymentOrder.donorRequestData);
+        donorRequest.status = 'Completed';
+        await donorRequest.save();
 
         return res.status(200).json({
             message: "Payment verified successfully.",

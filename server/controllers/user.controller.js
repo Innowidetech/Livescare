@@ -128,7 +128,21 @@ exports.donorRequest = async (req, res) => {
             }
 
             if (paymentMethod === 'Online') {
-                const paymentResponse = await createPaymentOrder(req, res, amount);
+                const newDonorRequest = {
+                    name,
+                    itemName,
+                    amount,
+                    paymentMethod,
+                    mobileNumber,
+                    email,
+                    state,
+                    city,
+                    address,
+                    pincode,
+                    description,
+                    status: 'Pending',
+                };
+                const paymentResponse = await createPaymentOrder(req, res, amount, newDonorRequest);
                 if (!paymentResponse.success) {
                     return res.status(500).json({ message: "Error creating payment order." });
                 }
