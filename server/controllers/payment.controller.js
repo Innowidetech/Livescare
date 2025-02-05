@@ -53,6 +53,13 @@ exports.verifyPayment = async (req, res) => {
     const { paymentOrderId, paymentSignature, paymentOrderIdReceived } = req.body;
 
     try {
+        if (paymentOrderId !== paymentOrderIdReceived) {
+            return res.status(400).json({
+              message: "Order IDs do not match.",
+              success: false,
+            });
+          }
+          
         const paymentOrder = await Payment.findOne({ paymentOrderId: paymentOrderIdReceived });
 
         if (!paymentOrder) {
