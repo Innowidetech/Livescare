@@ -24,7 +24,6 @@ exports.createPaymentOrder = async (req, res, amount, donorRequestData) => {
             amount,
             currency: 'INR',
             paymentStatus: "pending",
-            paymentSignature: null,
             paymentSignatureVerified: false,
             donorRequestData: donorRequestData,
         });
@@ -59,7 +58,7 @@ exports.verifyPayment = async (req, res) => {
               success: false,
             });
           }
-          
+
         const paymentOrder = await Payment.findOne({ paymentOrderId: paymentOrderIdReceived });
 
         if (!paymentOrder) {
@@ -82,6 +81,7 @@ exports.verifyPayment = async (req, res) => {
         }
 
         paymentOrder.paymentStatus = "success";
+        paymentOrder.paymentSignature = paymentSignature;
         paymentOrder.paymentSignatureVerified = true;
         await paymentOrder.save();
 
