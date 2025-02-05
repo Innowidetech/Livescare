@@ -1,52 +1,59 @@
-const Stripe = require('stripe');
+const Razorpay = require('razorpay');
 const Payment = require('../models/Payment');
 const DonorRequest = require('../models/DonorRequest');
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const crypto = require('crypto');
+
+const razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID, 
+    key_secret: process.env.RAZORPAY_SECRET_KEY,
+});
 
 exports.createPaymentOrder = async (req, res, amount, donorRequestData) => {
     try {
-        const paymentIntent = await stripe.paymentIntents.create({
+        const orderOptions = {
             amount: amount * 100,
-            currency: 'inr',
-        });
+            currency: 'INR',
+            receipt: `receipt_${Math.random().toString(36).substring(2, 10)}`,
+        };
+
+        const order = await razorpay.orders.create(orderOptions);
 
         const paymentOrder = await Payment.create({
-            paymentOrderId: paymentIntent.id,
+            paymentOrderId: order.id,
             amount,
-            currency: 'inr',
+            currency: 'INR',
             paymentStatus: "pending",
-            paymentSignature: paymentIntent.client_secret,
+            paymentSignature: null,
             paymentSignatureVerified: false,
             donorRequestData: donorRequestData,
         });
 
-        return res.status(201).json({
+        return {
             success: true,
-            message: 'Payment order created successfully.',
-            clientSecret: paymentIntent.client_secret,
-        });
+            orderId: order.id,
+            amount: amount,
+        };
+
     } catch (error) {
-        return res.status(500).json({
-            message: "Error creating payment order.",
+        console.error("Error while creating payment order:", error);
+
+        if (error.response) {
+            console.error("Razorpay API error:", error.response);
+        }
+
+        return {
             success: false,
-        });
+            error: error.response?.error?.description || error.message || "Unknown error occurred during payment order creation.",
+        };
     }
 };
 
 exports.verifyPayment = async (req, res) => {
-    const { paymentIntentId, paymentSignature } = req.body;
+    const { paymentOrderId, paymentSignature, paymentOrderIdReceived } = req.body;
 
     try {
-        const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+        const paymentOrder = await Payment.findOne({ paymentOrderId: paymentOrderIdReceived });
 
-        if (paymentIntent.status !== 'succeeded') {
-            return res.status(400).json({
-                message: "Payment verification failed. Status is not succeeded.",
-                success: false,
-            });
-        }
-
-        const paymentOrder = await Payment.findOne({ paymentOrderId: paymentIntent.id });
         if (!paymentOrder) {
             return res.status(404).json({
                 message: "Payment order not found.",
@@ -54,7 +61,12 @@ exports.verifyPayment = async (req, res) => {
             });
         }
 
-        if (paymentOrder.paymentSignature !== paymentSignature) {
+        const generatedSignature = crypto
+            .createHmac('sha256', process.env.RAZORPAY_SECRET_KEY)
+            .update(paymentOrderIdReceived + "|" + paymentSignature)
+            .digest('hex');
+
+        if (generatedSignature !== paymentSignature) {
             return res.status(400).json({
                 message: "Payment signature verification failed.",
                 success: false,
@@ -65,14 +77,17 @@ exports.verifyPayment = async (req, res) => {
         paymentOrder.paymentSignatureVerified = true;
         await paymentOrder.save();
 
-        const donorRequest = new DonorRequest(paymentOrder.donorRequestData);
-        donorRequest.status = 'Completed';
-        await donorRequest.save();
+        const donorRequest = await DonorRequest.findOne({ paymentOrderId: paymentOrderIdReceived });
+        if (donorRequest) {
+            donorRequest.status = 'Completed';
+            await donorRequest.save();
+        }
 
         return res.status(200).json({
             message: "Payment verified successfully.",
             success: true,
         });
+
     } catch (error) {
         console.error("Error verifying payment:", error);
         return res.status(500).json({

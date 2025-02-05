@@ -3,29 +3,34 @@ const mongoose = require('mongoose');
 const paymentSchema = new mongoose.Schema({
     paymentOrderId: {
         type: String,
-        required: true
+        required: true,
     },
     amount: {
         type: Number,
-        required: true
+        required: true,
     },
     currency: {
         type: String,
-        default: 'INR',
+        required: true,
     },
     paymentStatus: {
         type: String,
+        required: true,
         enum: ['pending', 'success', 'failed'],
-        default: 'pending'
+        default: 'pending',
     },
     paymentSignature: {
         type: String,
-        required: true,
+        default: null,
     },
     paymentSignatureVerified: {
         type: Boolean,
         default: false,
-    }
-}, { timestamps: true });
+    },
+    donorRequestData: {
+        type: Object,
+        required: true,
+    },
+});
 
 module.exports = mongoose.model('Payment', paymentSchema);

@@ -142,14 +142,17 @@ exports.donorRequest = async (req, res) => {
                     description,
                     status: 'Pending',
                 };
+
                 const paymentResponse = await createPaymentOrder(req, res, amount, newDonorRequest);
+
                 if (!paymentResponse.success) {
-                    return res.status(500).json({ message: "Error creating payment order." });
+                    return res.status(500).json({ message: "Error creating payment order: " + paymentResponse.error });
                 }
 
                 return res.status(200).json({
                     message: "Payment initiated successfully. Please complete the payment.",
-                    clientSecret: paymentResponse.clientSecret,
+                    orderId: paymentResponse.orderId,
+                    amount: paymentResponse.amount,
                 });
             }
         } else {
@@ -167,15 +170,15 @@ exports.donorRequest = async (req, res) => {
             });
             await newDonorRequest.save();
 
-            res.status(201).json({
+            return res.status(201).json({
                 message: 'Donor Request Form submitted successfully. Our team will reach out to you.',
             });
         }
     } catch (err) {
-        res.status(404).json({ message: 'Internal server error.', error: err.message });
+        console.error("Error during donor request:", err);
+        res.status(500).json({ message: 'Internal server error.', error: err.message });
     }
 };
-
 
 
 exports.subscribe = async (req, res) => {
