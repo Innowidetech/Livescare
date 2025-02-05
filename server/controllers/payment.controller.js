@@ -49,17 +49,10 @@ exports.createPaymentOrder = async (req, res, amount, donorRequestData) => {
 };
 
 exports.verifyPayment = async (req, res) => {
-    const { paymentOrderId, paymentSignature, paymentOrderIdReceived } = req.body;
+    const { paymentOrderId, razorpayPaymentId, razorpaySignature } = req.body;
 
     try {
-        if (paymentOrderId !== paymentOrderIdReceived) {
-            return res.status(400).json({
-              message: "Order IDs do not match.",
-              success: false,
-            });
-          }
-
-        const paymentOrder = await Payment.findOne({ paymentOrderId: paymentOrderIdReceived });
+        const paymentOrder = await Payment.findOne({ paymentOrderId });
 
         if (!paymentOrder) {
             return res.status(404).json({
@@ -68,12 +61,14 @@ exports.verifyPayment = async (req, res) => {
             });
         }
 
+        const signatureVerificationString = paymentOrderId + "|" + razorpayPaymentId;
+        
         const generatedSignature = crypto
             .createHmac('sha256', process.env.RAZORPAY_SECRET_KEY)
-            .update(paymentOrderIdReceived + "|" + paymentSignature)
+            .update(signatureVerificationString)
             .digest('hex');
 
-        if (generatedSignature !== paymentSignature) {
+        if (generatedSignature !== razorpaySignature) {
             return res.status(400).json({
                 message: "Payment signature verification failed.",
                 success: false,
@@ -81,11 +76,12 @@ exports.verifyPayment = async (req, res) => {
         }
 
         paymentOrder.paymentStatus = "success";
-        paymentOrder.paymentSignature = paymentSignature;
+        paymentOrder.razorpayPaymentId = razorpayPaymentId;
+        paymentOrder.razorpaySignature = razorpaySignature;
         paymentOrder.paymentSignatureVerified = true;
         await paymentOrder.save();
 
-        const donorRequest = await DonorRequest.findOne({ paymentOrderId: paymentOrderIdReceived });
+        const donorRequest = await DonorRequest.findOne({ paymentOrderId });
         if (donorRequest) {
             donorRequest.status = 'Completed';
             await donorRequest.save();
@@ -101,6 +97,7 @@ exports.verifyPayment = async (req, res) => {
         return res.status(500).json({
             message: "Internal server error during verification.",
             success: false,
+            error: error.message
         });
     }
 };
