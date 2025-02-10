@@ -79,8 +79,8 @@ exports.getProfile = async (req, res) => {
 
 exports.createItem = async (req, res) => {
     try {
-        const { itemName, count, status, amount } = req.body;
-        if (!itemName || !status) {
+        const { itemName, count, amount } = req.body;
+        if (!itemName) {
             return res.status(400).json({ message: 'Please provide all the details to add item.' })
         }
 
@@ -94,16 +94,28 @@ exports.createItem = async (req, res) => {
             return res.status(404).json({ message: "Only admin can access." })
         }
 
-        const newItem = new Inventory({
-            itemName,
-            count,
-            status,
-            amount
-        });
+        const existingItem = await Inventory.findOne({ itemName });
 
-        await newItem.save()
-
-        res.status(201).json({ message: 'Item created successfully and added in inventory.', newItem })
+        if (existingItem) {
+            if (itemName === 'Money') {
+                existingItem.amount += amount;
+            }
+            else {
+                existingItem.count += count;
+            }
+            await existingItem.save();
+            return res.status(200).json({ message: 'Item updated successfully.', existingItem });
+        }
+        else {
+            const newItem = new Inventory({
+                itemName,
+                count,
+                status: 'Available',
+                amount
+            });
+            await newItem.save();
+            return res.status(201).json({ message: 'Item created successfully and added to inventory.', newItem });
+        }
     }
     catch (err) {
         return res.status(500).json({ message: 'Internal server error', error: err.message })
@@ -140,8 +152,8 @@ exports.editItem = async (req, res) => {
         if (!itemId) {
             return res.status(400).json({ message: 'Provide the item Id.' })
         }
-        const { newItemName, newCount, newStatus, newAmount } = req.body;
-        if (!newItemName && !newCount && !newStatus && !newAmount) {
+        const { newCount, newStatus, newAmount } = req.body;
+        if (!newCount && !newStatus && !newAmount) {
             return res.status(400).json({ message: 'Please provide data to update.' });
         }
 
@@ -160,7 +172,7 @@ exports.editItem = async (req, res) => {
             return res.status(404).json({ message: "No item found with the Id." })
         }
 
-        inventory.itemName = newItemName || inventory.itemName;
+        // inventory.itemName = inventory.itemName;
         inventory.count = newCount || inventory.count;
         inventory.status = newStatus || inventory.status;
         inventory.amount = newAmount || inventory.amount;
@@ -175,36 +187,36 @@ exports.editItem = async (req, res) => {
 };
 
 
-exports.deleteItem = async (req, res) => {
-    try {
-        const { itemId } = req.params;
-        if (!itemId) {
-            return res.status(400).json({ message: 'Provide the item Id.' })
-        }
+// exports.deleteItem = async (req, res) => {
+//     try {
+//         const { itemId } = req.params;
+//         if (!itemId) {
+//             return res.status(400).json({ message: 'Provide the item Id.' })
+//         }
 
-        const loggedinid = req.user && req.user.id;
-        if (!loggedinid) {
-            return res.status(401).json({ message: 'Unauthorized.' })
-        }
+//         const loggedinid = req.user && req.user.id;
+//         if (!loggedinid) {
+//             return res.status(401).json({ message: 'Unauthorized.' })
+//         }
 
-        const loggedinuser = await User.findById(loggedinid);
-        if (!loggedinuser && loggedinuser.role !== 'admin') {
-            return res.status(404).json({ message: "Only admin can access." })
-        }
+//         const loggedinuser = await User.findById(loggedinid);
+//         if (!loggedinuser && loggedinuser.role !== 'admin') {
+//             return res.status(404).json({ message: "Only admin can access." })
+//         }
 
-        const inventory = await Inventory.findById(itemId);
-        if (!inventory) {
-            return res.status(404).json({ message: "No item found with the Id." })
-        }
+//         const inventory = await Inventory.findById(itemId);
+//         if (!inventory) {
+//             return res.status(404).json({ message: "No item found with the Id." })
+//         }
 
-        await Inventory.deleteOne(inventory);
+//         await Inventory.deleteOne(inventory);
 
-        res.status(201).json({ message: 'Item deleted successfully.' })
-    }
-    catch (err) {
-        return res.status(500).json({ message: 'Internal server error', error: err.message })
-    }
-};
+//         res.status(201).json({ message: 'Item deleted successfully.' })
+//     }
+//     catch (err) {
+//         return res.status(500).json({ message: 'Internal server error', error: err.message })
+//     }
+// };
 
 exports.getMembers = async (req, res) => {
     try {
@@ -225,7 +237,7 @@ exports.getMembers = async (req, res) => {
 
         const total = members.length;
 
-        res.status(201).json({ message: 'Members fetched successfully.', total, members })
+        res.status(200).json({ message: 'Members fetched successfully.', total, members })
     }
     catch (err) {
         return res.status(500).json({ message: 'Internal server error', error: err.message })
@@ -781,7 +793,6 @@ exports.updateSubmitRequestStatus = async (req, res) => {
         }
 
         const oldStatus = submits.status
-
         submits.status = newStatus
         await submits.save()
 
@@ -910,9 +921,9 @@ exports.createCertificate = async (req, res) => {
 };
 
 
-exports.getCompletedDonors = async(req,res)=>{
+exports.getCompletedDonors = async (req, res) => {
     try {
-    const loggedinid = req.user && req.user.id;
+        const loggedinid = req.user && req.user.id;
         if (!loggedinid) {
             return res.status(401).json({ message: 'Unauthorized.' })
         }
@@ -922,16 +933,16 @@ exports.getCompletedDonors = async(req,res)=>{
             return res.status(404).json({ message: "Only admin can access." })
         }
 
-        const donor = await DonorRequest.find({status:'Completed'}).sort({createdAt:-1});
-        if(!donor.length){
-            return res.status(404).json({message:"No donations completed."})
+        const donor = await DonorRequest.find({ status: 'Completed' }).sort({ createdAt: -1 });
+        if (!donor.length) {
+            return res.status(404).json({ message: "No donations completed." })
         }
 
-        res.status(200).json({message:"Completed donor list.", donor})
+        res.status(200).json({ message: "Completed donor list.", donor })
     }
-        catch (err) {
-            return res.status(500).json({ message: 'Internal server error', error: err.message })
-        }
+    catch (err) {
+        return res.status(500).json({ message: 'Internal server error', error: err.message })
+    }
 };
 
 
@@ -971,9 +982,9 @@ exports.getCertificates = async (req, res) => {
 
 exports.getCertificateById = async (req, res) => {
     try {
-        const {certificateId} = req.params;
-        if(!certificateId){
-            return res.status(400).json({message:"Provide the certificate id."})
+        const { certificateId } = req.params;
+        if (!certificateId) {
+            return res.status(400).json({ message: "Provide the certificate id." })
         }
 
         const loggedinid = req.user && req.user.id;
@@ -1099,17 +1110,21 @@ exports.createProgram = async (req, res) => {
             return res.status(404).json({ message: "Only admin can access." })
         }
 
-        let photo;
-        if (req.file) {
+        if (!req.files || !req.files.photo || req.files.photo.length !== 2) {
+            return res.status(400).json({ message: "Please upload exactly two images." });
+        }
+
+        let photoUrls = [];
+        for (let file of req.files.photo) {
             try {
-                const [photoUrl] = await uploadImage(req.file);
-                photo = photoUrl;
+                const [photoUrl] = await uploadImage(file);
+                photoUrls.push(photoUrl);
             } catch (error) {
                 return res.status(500).json({ message: 'Failed to upload image.', error: error.message });
             }
-        };
+        }
 
-        const newProgram = new Program({ title, location, date, time, description, image: photo });
+        const newProgram = new Program({ title, location, date, time, description, image: photoUrls });
         await newProgram.save()
 
         res.status(201).json({ message: `New Program created successfully.`, newProgram })
@@ -1147,9 +1162,9 @@ exports.getProgramsForAdmin = async (req, res) => {
 
 exports.getProgramsById = async (req, res) => {
     try {
-        const {programId} = req.params;
-        if(!programId){
-            return res.status(404).json({message:"Provide the program id."})
+        const { programId } = req.params;
+        if (!programId) {
+            return res.status(404).json({ message: "Provide the program id." })
         }
         const programs = await Program.findById(programId);
         if (!programs) {

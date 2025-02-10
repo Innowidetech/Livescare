@@ -1,5 +1,5 @@
 const express = require('express');
-const {registrationRequest, contactUs, submitRequest, donorRequest, subscribe, getPrograms, getSpentDonationsPercentages} = require('../controllers/user.controller');
+const {registrationRequest, contactUs, submitRequest, donorRequest, subscribe, getPrograms, getSpentDonationsPercentages, aboutUs} = require('../controllers/user.controller');
 const { verifyPayment } = require('../controllers/payment.controller');
 const { getBlogs, getBlogById, getProgramsById } = require('../controllers/admin.controller');
 
@@ -16,6 +16,7 @@ router.get('/program/:programId', getProgramsById);
 router.get('/spent', getSpentDonationsPercentages);
 router.get('/blog',getBlogs);
 router.get('/blog/:blogId', getBlogById);
+router.get('/aboutUs', aboutUs);
 
 
 module.exports = router;

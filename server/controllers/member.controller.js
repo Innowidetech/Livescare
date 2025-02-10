@@ -5,9 +5,6 @@ const Certificate = require('../models/Certificate');
 exports.editProfile = async (req, res) => {
     try{
         const { newFullname, newUsername, newEmail, newMobileNumber, newState, newCity, newPincode, newWhatsapp, newFacebook, newTwitter, newLinkedin} = req.body;
-        // if (!newFullname && !newUsername && !newEmail && !newMobileNumber && !newState && !newCity && !newPincode && !newWhatsapp && !newFacebook && !newTwitter && !newLinkedin) {
-        //     return res.status(400).json({ message: 'Please provide any new data to update the profile.' })
-        // }
 
         const loggedinid = req.user && req.user.id;
         if(!loggedinid){

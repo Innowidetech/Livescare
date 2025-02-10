@@ -21,10 +21,16 @@ const ProgramsSchema = new mongoose.Schema({
     type:String,
     required:true
   },
-  image:{
-    type:String,
-    required:true
-  },
+  image: { 
+    type: [String],
+    validate: {
+        validator: function(val) {
+            return val.length === 2;
+        },
+        message: 'You must upload two images.'
+    },
+    required: true
+}
 }, { timestamps: true });
 
 module.exports = mongoose.model('Programs', ProgramsSchema);

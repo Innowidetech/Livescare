@@ -7,7 +7,7 @@ const inventorySchema = new mongoose.Schema({
     enum: ['Food', 'Clothes', 'Books', 'Medical', 'Toys', 'Games Kit', 'Money', 'Others']
   },
   count: {
-    type: String,
+    type: Number,
     required: function () {
       return this.itemName !== 'Money';
     }
@@ -18,7 +18,7 @@ const inventorySchema = new mongoose.Schema({
     enum: ['Available', 'Out Of Stock']
   },
   amount: {
-    type: String,
+    type: Number,
     required: function () {
       return this.itemName === 'Money';
     }

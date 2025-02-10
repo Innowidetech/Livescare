@@ -9,7 +9,7 @@ const Subscribe = require('../models/Subscribe');
 const subscribeTemplate = require('../utils/subscribeTemplate');
 const Program = require('../models/OurPrograms');
 const moment = require('moment');
-const {createPaymentOrder} = require('../controllers/payment.controller')
+const { createPaymentOrder } = require('../controllers/payment.controller')
 
 exports.registrationRequest = async (req, res) => {
     try {
@@ -68,15 +68,13 @@ exports.submitRequest = async (req, res) => {
             if (!amount) {
                 return res.status(400).json({ message: "Amount must be specified." });
             }
-            if(amount > 10000){
+            if (amount > 10000) {
                 return res.status(400).json({ message: "The requested amount must be less than 10000" });
             }
         }
 
         const newSubmitRequest = new SubmitRequest({ name, itemName, amount, mobileNumber, email, state, city, address, pincode, description });
         await newSubmitRequest.save()
-
-        // await sendEmailToAdmin(process.env.EMAIL_ID, email, `Submit Request Form - Livescare by ${name}`, contactUsTemplate(name, itemName, mobileNumber, email, state, city, address, pincode, description));
 
         res.status(201).json({
             message: 'Submit Request Form submitted successfully, our team will reach out you via provided Mobile Number or Email.',
@@ -96,9 +94,9 @@ exports.donorRequest = async (req, res) => {
             return res.status(400).json({ message: "Provide all the details to submit the form." });
         }
 
-        if(itemName === 'Money'){
-            if(!paymentMethod){
-                return res.status(400).json({message:"Provide the payment method."})
+        if (itemName === 'Money') {
+            if (!paymentMethod) {
+                return res.status(400).json({ message: "Provide the payment method." })
             }
         }
 
@@ -278,7 +276,33 @@ exports.getSpentDonationsPercentages = async (req, res) => {
             data: responseData
         });
 
-    } catch (error) {
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while processing the request.' });
+    }
+};
+
+
+exports.aboutUs = async (req, res) => {
+    try {
+        const startYear = 2025;
+        const currentYear = new Date().getFullYear();
+        const yearsCount = currentYear - startYear;
+
+        const members = await User.countDocuments()
+        const membersCount = members - 1;
+
+        const submits = await SubmitRequest.find({ status: "Completed" })
+        const submitsCount = submits.length;
+
+        const states = await SubmitRequest.find().select('state');
+        const uniqueStates = new Set(states.map(state => state.state.toLowerCase()));
+        const statesCount = uniqueStates.size;
+
+        res.status(200).json({ message: "About us page data", yearsCount, membersCount, submitsCount, statesCount })
+    }
+    catch (error) {
         console.error(error);
         res.status(500).json({ message: 'An error occurred while processing the request.' });
     }
