@@ -26,7 +26,6 @@
     "nodemailer": "^6.9.16",
     "nodemon": "^3.1.9",
     "razorpay": "^2.9.5",
-    "sanitize-html": "^2.14.0",
-    "stripe": "^17.5.0"
+    "sanitize-html": "^2.14.0"
   }
 }
