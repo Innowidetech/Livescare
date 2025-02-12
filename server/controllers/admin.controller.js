@@ -381,6 +381,7 @@ exports.getDonorRequests = async (req, res) => {
                 name: donor.name,
                 itemName: donor.itemName,
                 count: donor.count,
+                amount:donor.amount,
                 createdAt: donor.createdAt,
                 description: donor.description,
                 status: donor.status
