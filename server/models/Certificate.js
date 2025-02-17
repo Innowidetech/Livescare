@@ -10,10 +10,6 @@ const CertificateSchema = new mongoose.Schema({
     ref:'DonorRequest',
     required:true,
   },
-  issuedDate:{
-    type:Date,
-    required:true,
-  },
   signature:{
     type:String,
     required:true,
@@ -28,6 +24,8 @@ const CertificateSchema = new mongoose.Schema({
     default:'Pending',
     required:true,
   },
+  issuedTo:String,
+  relation:String
 }, { timestamps: true });
 
 module.exports = mongoose.model('Certificate', CertificateSchema);

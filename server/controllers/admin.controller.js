@@ -877,8 +877,8 @@ exports.updateDonorRequestStatus = async (req, res) => {
 
 exports.createCertificate = async (req, res) => {
     try {
-        const { donorName, donationId, issuedDate } = req.body;
-        if (!donorName || !donationId || !issuedDate) {
+        const { donorName, donationId } = req.body;
+        if (!donorName || !donationId) {
             return res.status(404).json({ message: "Provide all details to create certificate." })
         }
 
@@ -910,7 +910,7 @@ exports.createCertificate = async (req, res) => {
         const admin = await User.findOne({ role: 'admin' })
 
         const newCertificate = new Certificate({
-            donorName, donationId, issuedDate, signature: photo, issuedBy: admin.fullname
+            donorName, donationId, signature: photo, issuedBy: admin.fullname
         })
         await newCertificate.save()
 
@@ -1023,7 +1023,7 @@ exports.getCertificateById = async (req, res) => {
 exports.editCertificate = async (req, res) => {
     try {
         const { certificateId } = req.params;
-        const { newDonorName, newDonationId, newIssuedDate } = req.body;
+        const { newDonorName, newDonationId } = req.body;
 
         if (!certificateId) {
             return res.status(400).json({ message: "Please provide certificate id." })
@@ -1033,7 +1033,7 @@ exports.editCertificate = async (req, res) => {
             return res.status(404).json({ message: 'No certificate found with given id.' })
         }
 
-        if (!newDonorName && !newDonationId && !newIssuedDate) {
+        if (!newDonorName && !newDonationId) {
             return res.status(400).json({ message: "Provide any new data to update." })
         }
 
@@ -1049,7 +1049,6 @@ exports.editCertificate = async (req, res) => {
 
         certificate.donorName = newDonorName || certificate.donorName;
         certificate.donationId = newDonationId || certificate.donationId;
-        certificate.issuedDate = newIssuedDate || certificate.issuedDate;
         certificate.signature = certificate.signature;
         certificate.issuedBy = certificate.issuedBy;
         certificate.status = certificate.status;

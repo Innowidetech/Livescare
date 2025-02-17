@@ -14,7 +14,6 @@ router.post('/profile', protect, upload.single('photo'), editProfile);
 router.post('/item', protect, createItem);
 router.get('/item', protect, getItems);
 router.post('/item/:itemId', protect, editItem);
-// router.delete('/item/:itemId', protect, deleteItem);
 router.get('/members', protect, getMembers);
 router.get('/submit/:place/:contact', protect, getSubmitRequests);
 router.get('/donor/:place/:contact', protect, getDonorRequests);
