@@ -19,7 +19,7 @@ router.get('/dailyUsers/:timePeriod', protect, dailyUsers);
 router.get('/certificate', protect, getCertificates);
 router.get('/certificate/:certificateId', protect, getCertificateById);
 router.get('/getCounts', protect, getAllCounts);
-router.patch('/updateCertificateStatus/:certificateId/:newStatus', protect, issueCertificate);
+router.patch('/updateCertificateStatus/:certificateId', protect, issueCertificate);
 router.post('/updateSubmitRequestStatus/:requestId/:newStatus', protect, updateSubmitRequestStatus);
 router.post('/updateDonorRequestStatus/:requestId/:newStatus', protect, updateDonorRequestStatus);
 router.get('/programs', getPrograms);

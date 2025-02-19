@@ -51,14 +51,11 @@ exports.editProfile = async (req, res) => {
 
 exports.issueCertificate = async(req,res)=>{
 try {
-        const {certificateId, newStatus} = req.params;
-        const { issuedTo, relation, deliveredDate} = req.body;
-        if(!issuedTo || !relation || !deliveredDate){ return res.status(400).json({message:"Provide the following details to issue certificate."})}
+        const {certificateId} = req.params;
+        const { issuedTo, relation, deliveredDate, status} = req.body;
+        if(!issuedTo || !relation || !deliveredDate || !status){ return res.status(400).json({message:"Provide the following details to issue certificate."})}
         if(!certificateId){
             return res.status(400).json({message:"Please provide certificate id."})
-        }
-        if (!newStatus) {
-            return res.status(400).json({ message: "Provide any new ststus to update." })
         }
 
         const certificate = await Certificate.findById(certificateId).populate('donationId');
@@ -80,7 +77,7 @@ try {
             return res.status(404).json({message:"You can't update the status of this certificate."})
         }
 
-        certificate.status = newStatus;
+        certificate.status = status;
         certificate.issuedTo = issuedTo;
         certificate.relation = relation;
         certificate.issuedBy = loggedinuser.fullname;
