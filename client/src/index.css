@@ -212,3 +212,13 @@ button:hover {
   -ms-overflow-style: none;  /* Hide scrollbar for Internet Explorer 10+ */
   scrollbar-width: none;  /* Hide scrollbar for Firefox */
 }
+
+
+/* for small 120px screen */
+
+@media screen and (max-width: 320px) {
+  .calendar{
+    width: 120px;
+  }
+
+}

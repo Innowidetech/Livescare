@@ -101,7 +101,7 @@ function FilterDropdown({ options, value, onChange, align = 'left', isDate = fal
   if (isDate) {
     return (
       <div className="relative" ref={dropdownRef}>
-        <div className="flex items-center gap-2 p-2 md:gap-2 md:px-4 md:py-2 text-[#808080] border border-[#E5E5E5] rounded-lg text-xs md:text-lg">
+        <div className="flex items-center gap-2 p-2 md:gap-2 md:px-4 md:py-2 text-[#808080] border border-[#E5E5E5] rounded-lg text-xs md:text-lg calendar">
           <DatePicker
             selected={value}
             onChange={onChange}
@@ -365,10 +365,10 @@ function MemberDonorHistory() {
   
 
             {/* Filters */}
-            <div className="flex gap-2 md:gap-4 -ml-8 md:-ml-0">
+            <div className="flex gap-2 md:gap-4">
               <FilterDropdown 
                 isDate={true}
-                value={selectedDate}
+                value={selectedDate}                      
                 onChange={(date) => {
                   setSelectedDate(date);
                 }}

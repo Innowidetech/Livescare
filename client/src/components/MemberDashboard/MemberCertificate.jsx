@@ -215,8 +215,9 @@ function MemberCertificate() {
         <ToastContainer />
         <div className="sm:px-6 lg:px-8 py-6 mt-12 md:mt-10">
           {/* Header with title and filter toggle */}
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-3xl mb-2 font-medium text-left" style={{fontFamily:'Inter'}}>Hi,<span className=""> {profile?.loggedinuser?.fullname} </span></h2>
+          <div className="md:flex justify-between items-center mb-6">
+            <h2 className="text-2xl mb-2 font-medium text-left" style={{fontFamily:'Inter'}}>Hi,<span className=""> {profile?.loggedinuser?.fullname} </span></h2>
+            <div className="flex justify-between">
             <h1 className="md:text-2xl font-medium text-[#202224]" style={{fontFamily:'Inter'}}>
               Certificates
             </h1>
@@ -227,6 +228,7 @@ function MemberCertificate() {
               <Filter className="w-4 h-4 mr-2" />
               Filters
             </button>
+            </div>
           </div>
 
           {/* Edit Modal */}

@@ -14,7 +14,8 @@ export const fetchPrograms = createAsyncThunk(
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch programs');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch programs');
       }
 
       const data = await response.json();
@@ -27,7 +28,7 @@ export const fetchPrograms = createAsyncThunk(
 
 export const addProgram = createAsyncThunk(
   'program/addProgram',
-  async (programData, { rejectWithValue, dispatch }) => {
+  async (programData, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -60,8 +61,6 @@ export const addProgram = createAsyncThunk(
       }
 
       const data = await response.json();
-      // Fetch updated programs list after successful addition
-      await dispatch(fetchPrograms()).unwrap();
       return data.program;
     } catch (error) {
       console.error('Add program error:', error);
@@ -72,7 +71,7 @@ export const addProgram = createAsyncThunk(
 
 export const deleteProgram = createAsyncThunk(
   'program/deleteProgram',
-  async (programId, { rejectWithValue, dispatch }) => {
+  async (programId, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -87,11 +86,10 @@ export const deleteProgram = createAsyncThunk(
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete program');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete program');
       }
 
-      // Fetch updated programs list after successful deletion
-      await dispatch(fetchPrograms()).unwrap();
       return programId;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -136,9 +134,13 @@ const programSlice = createSlice({
         state.actionStatus.adding = true;
         state.error = null;
       })
-      .addCase(addProgram.fulfilled, (state) => {
+      .addCase(addProgram.fulfilled, (state, action) => {
         state.actionStatus.adding = false;
         state.error = null;
+        // Add the new program to the state and refetch
+        state.programs = [...state.programs, action.payload];
+        // Fetch updated programs to ensure consistency
+        fetchPrograms();
       })
       .addCase(addProgram.rejected, (state, action) => {
         state.actionStatus.adding = false;
@@ -149,9 +151,13 @@ const programSlice = createSlice({
         state.actionStatus.deleting = true;
         state.error = null;
       })
-      .addCase(deleteProgram.fulfilled, (state) => {
+      .addCase(deleteProgram.fulfilled, (state, action) => {
         state.actionStatus.deleting = false;
         state.error = null;
+        // Remove the deleted program from the state
+        state.programs = state.programs.filter(program => program._id !== action.payload);
+        // Fetch updated programs to ensure consistency
+        fetchPrograms();
       })
       .addCase(deleteProgram.rejected, (state, action) => {
         state.actionStatus.deleting = false;

@@ -5,6 +5,7 @@ import { faFacebook, faWhatsapp, faLinkedin, faTwitter } from '@fortawesome/free
 import { registerUser } from '../../redux/RegisterationSlice';
 import { toast } from 'react-toastify';
 import Loginimg from '../../Assets/Loginimg.png';
+import { Link } from 'react-router-dom';
 
 const RegistrationRequest = () => {
   const dispatch = useDispatch();
@@ -146,9 +147,9 @@ const RegistrationRequest = () => {
           <div className="mt-4 text-center text-gray-700">
             <p>
               Already have an account?{' '}
-              <a href="/login" className="text-black font-semibold hover:text-blue-400">
+              <Link to="/login" className="text-black font-semibold hover:text-blue-400">
                 Login
-              </a>
+              </Link>
             </p>
           </div>
 

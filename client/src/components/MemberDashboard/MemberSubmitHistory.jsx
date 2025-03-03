@@ -6,7 +6,6 @@ import {  fetchMemberSubmitRequests,
 import { ChevronDown, X, Pencil, Calendar } from 'lucide-react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-// import Header from './layout/MemberHeader';
 import {getProfile} from  '../../redux/member/memberProfile';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -105,7 +104,7 @@ function FilterDropdown({ options, value, onChange, align = 'left', isDate = fal
   if (isDate) {
     return (
       <div className="relative" ref={dropdownRef}>
-        <div className="flex items-center gap-2 p-2 md:gap-2 md:px-4 md:py-2 text-[#808080] border border-[#E5E5E5] rounded-lg text-xs md:text-lg">
+        <div className="flex items-center gap-2 p-2 md:gap-2 md:px-4 md:py-2 text-[#808080] border border-[#E5E5E5] rounded-lg text-xs md:text-lg calendar">
           <DatePicker
             selected={value}
             onChange={onChange}
@@ -350,7 +349,6 @@ function MemberSubmitHistory() {
 
   return (
     <>
-      {/* <Header /> */}
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -363,47 +361,50 @@ function MemberSubmitHistory() {
         pauseOnHover
         theme="light"
       />
-      <div className="min-h-screen p-4 mt-10 md:mt-12">
-      <div className=" py-8 mt-10 md:mt-10">
-  <div className="flex flex-col gap-6">
-    <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start">
-      <h2 className="text-3xl sm:text-2xl mb-2 font-medium text-left" style={{fontFamily:'Inter'}}>
-        Hi,<span className=""> {profile?.loggedinuser?.fullname} </span>
-      </h2>
-      <h1 className="text-xl sm:text-2xl font-medium text-center text-[#202224]" style={{fontFamily:'Inter'}}>
-        Submit Request History
-      </h1>
-      {/* <button className="bg-[#FF9500] text-white md:px-4 md:py-2 p-1 rounded-lg">
-        Update Status
-      </button> */}
-    </div>
- 
+      <div className="min-h-screen p-4 md:mt-12 mt-10">
+        <div className="py-8 mt-10 md:mt-10">
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start">
+              <h2 className="text-3xl sm:text-2xl mb-2 font-medium text-left" style={{fontFamily:'Inter'}}>
+                Hi,<span className=""> {profile?.loggedinuser?.fullname} </span>
+              </h2>
+              <h1 className="text-xl sm:text-2xl font-medium text-center sm:text-left text-[#202224]" style={{fontFamily:'Inter'}}>
+                Submit Request History
+              </h1>
+              <div className="flex items-center gap-2 mt-4 sm:mt-0">
+                {/* <span className="text-sm text-gray-600">Total: {donors?.total || 0}</span> */}
+              </div>
+            </div>
 
-            <div className="flex gap-2 md:gap-4 -ml-8 md:-ml-0">
+            <div className="flex flex-row gap-2 md:gap-4">
               <FilterDropdown 
                 isDate={true}
                 value={selectedDate}
                 onChange={(date) => {
                   setSelectedDate(date);
-                }}
+                }}  
               />
-              <FilterDropdown
-                options={itemTypeOptions}
-                value={selectedItemType}
-                onChange={(type) => {
-                  setSelectedItemType(type);
-                }}
-              />
-              <FilterDropdown
-                options={statusOptions}
-                value={selectedStatus}
-                onChange={(status) => {
-                  setSelectedStatus(status);
-                }}
-              />
+              <div className="">
+                <FilterDropdown
+                  options={itemTypeOptions}
+                  value={selectedItemType}
+                  onChange={(type) => {
+                    setSelectedItemType(type);
+                  }}
+                />
+              </div>
+              <div className="">
+                <FilterDropdown
+                  options={statusOptions}
+                  value={selectedStatus}
+                  onChange={(status) => {
+                    setSelectedStatus(status);
+                  }}
+                />
+              </div>
             </div>
 
-            <div className="hidden lg:block rounded-xl shadow w-fit">
+            <div className="hidden lg:block rounded-xl shadow overflow-x-scroll hide-scrollbar">
               <table className="w-full">
                 <thead>
                   <tr className="border-b bg-[#F1F4F9]" style={{fontFamily:'Inter'}}>
@@ -437,7 +438,8 @@ function MemberSubmitHistory() {
                         onChange={handleContactChange}
                       />
                     </th>
-                    <th className="px-6 py-4 text-left font-medium text-[#202224]">Description
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">
+                      Description
                     </th>
                     <th className="px-6 py-4 text-left font-medium text-[#202224]">
                       Status
@@ -445,7 +447,7 @@ function MemberSubmitHistory() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredRequests.filter((item) => item.status != "Pending" ).map((item) => (
+                  {filteredRequests.filter((item) => item.status !== "Pending").map((item) => (
                     <tr key={item.id} className="border-b last:border-b-0">
                       <td className="px-6 py-4 text-[#202224]">{item.name}</td>
                       <td className="px-6 py-4 text-[#202224]">
@@ -492,7 +494,7 @@ function MemberSubmitHistory() {
             </div>
 
             <div className="lg:hidden space-y-4">
-              {filteredRequests.filter((item) => item.status != "Pending" ).map((item) => (
+              {filteredRequests.filter((item) => item.status !== "Pending").map((item) => (
                 <div
                   key={item.id}
                   className="bg-[#FCFDFD] rounded-xl p-4 space-y-4"
@@ -553,7 +555,8 @@ function MemberSubmitHistory() {
                         </h1>
                       </div>
                       <div className="flex items-center justify-between">
-                        <h1 className="text-left font-medium text-[#202224]">Description
+                        <h1 className="text-left font-medium text-[#202224] text-sm">
+                          Description
                         </h1>
                         <button
                           onClick={() => handleOpenModal(item.description)}

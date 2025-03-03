@@ -152,7 +152,7 @@ const { profile } = useSelector((state) => state.adminProfile);
            <div className='md:mt-14 mt-10'>
            <h2 className="text-3xl mb-2 font-medium text-left" style={{fontFamily:'Inter'}}>Hi,<span className=""> {profile?.loggedinuser?.fullname} </span></h2>
            </div>
-      <div className="bg-white p-6 shadow-lg rounded-lg border border-gray-300 mt-6 w-full mx-4">
+      <div className="bg-white p-6 shadow-lg rounded-lg border border-gray-300 mt-6 w-full md:mx-4">
         
         <div className="flex flex-wrap justify-between items-center mb-4">
           
@@ -286,7 +286,7 @@ const { profile } = useSelector((state) => state.adminProfile);
 
       <div className="mt-8 grid lg:grid-cols-2 gap-8">
         {/* Inflow Pie Chart Section */}
-        <div className="bg-white p-6 rounded-lg shadow-lg mx-4">
+        <div className="bg-white p-6 rounded-lg shadow-lg md:mx-4">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-medium" style={{fontFamily:'Inter'}}>Inflow invoices</h3>
           </div>
@@ -470,7 +470,7 @@ const { profile } = useSelector((state) => state.adminProfile);
 
       {/* Daily Income Graph Section */}
       <div className="mt-8">
-        <div className="bg-white p-6 rounded-lg shadow-lg mx-4">
+        <div className="bg-white p-6 rounded-lg shadow-lg md:mx-4">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-medium" style={{fontFamily:'Inter'}}>Analysis</h3>
             

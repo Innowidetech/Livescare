@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Food1 from "../Assets/food.png";
 import Clothes from "../Assets/6.png";
@@ -50,6 +50,29 @@ const DonateNowForm = () => {
   const [paymentMethod, setPaymentMethod] = useState("Online");
   const [donorName, setDonorName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [razorpayLoaded, setRazorpayLoaded] = useState(false);
+
+  // Load Razorpay script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    script.onload = () => {
+      console.log('Razorpay script loaded successfully');
+      setRazorpayLoaded(true);
+    };
+    script.onerror = () => {
+      console.error('Failed to load Razorpay script');
+      toast.error('Payment gateway failed to load. Please try again later.');
+    };
+    document.body.appendChild(script);
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
 
   const toggleFormVisibility = (item) => {
     setSelectedItem(item);
@@ -79,8 +102,16 @@ const DonateNowForm = () => {
         payload
       );
 
+      console.log("Payment response:", paymentResponse.data);
+
       if (!paymentResponse.data.orderId) {
         toast.error("Failed to create Razorpay order");
+        return;
+      }
+
+      if (!razorpayLoaded || typeof window.Razorpay !== 'function') {
+        console.error('Razorpay not loaded yet');
+        toast.error('Payment gateway is not ready. Please try again.');
         return;
       }
 
@@ -133,11 +164,15 @@ const DonateNowForm = () => {
         },
       };
 
+      console.log("Creating Razorpay instance with options:", options);
       const razorpay = new window.Razorpay(options);
       razorpay.open();
     } catch (error) {
       console.error("Payment Error:", error);
-      toast.error("Failed to initiate payment. Please try again.");
+      toast.error(
+        error.response?.data?.message ||
+        "Failed to initiate payment. Please try again."
+      );
     }
   };
 
@@ -635,15 +670,17 @@ const DonateNowForm = () => {
                     <button
                       type="submit"
                       onClick={handleSubmit}
-                      disabled={loading}
+                      disabled={loading || (selectedItem === ITEM_NAMES.MONEY && paymentMethod === "Online" && !razorpayLoaded)}
                       className={`text-white bg-[#FCA311] px-10 py-2 rounded-md shadow-gray-600 shadow-lg ${
-                        loading ? "opacity-50 cursor-not-allowed" : ""
+                        loading || (selectedItem === ITEM_NAMES.MONEY && paymentMethod === "Online" && !razorpayLoaded) 
+                          ? "opacity-50 cursor-not-allowed" 
+                          : ""
                       }`}
                     >
                       {loading ? (
                         <span>Processing...</span>
-                      ) : selectedItem === ITEM_NAMES.MONEY ? (
-                        "Proceed to Payment"
+                      ) : selectedItem === ITEM_NAMES.MONEY && paymentMethod === "Online" ? (
+                        razorpayLoaded ? "Proceed to Payment" : "Loading Payment Gateway..."
                       ) : (
                         "Submit"
                       )}

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { ToastContainer,toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ContactUs = () => {
     const [formData, setFormData] = useState({
@@ -81,7 +83,7 @@ const ContactUs = () => {
             });
 
             const data = await response.json();
-
+            toast.success('Thank you for your message!')
             if (response.ok) {
                 setFormStatus('Thank you for your message!');
                 setFormData({ firstName: '', lastName: '', email: '', mobileNumber: '', message: '' }); // Clear the form
@@ -90,10 +92,24 @@ const ContactUs = () => {
             }
         } catch (error) {
             setFormStatus('Error submitting form. Please try again.');
+            toast.error(error);
         }
     };
 
     return (
+        <>
+         <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            />
         <div className="flex flex-col items-center py-14">
             <div className="text-start max-w-4xl mx-auto px-4 py-10">
                 <h1 className="text-2xl sm:text-3xl font-bold text-[#14213D] mb-4">Contact Us</h1>
@@ -196,10 +212,11 @@ const ContactUs = () => {
                             Send Message
                         </button>
                     </form>
-                    {formStatus && <div className="mt-4 text-center text-lg">{formStatus}</div>}
+                    {/* {formStatus && <div className="mt-4 text-center text-lg">{formStatus}</div>} */}
                 </div>
             </div>
         </div>
+        </>
     );
 };
 

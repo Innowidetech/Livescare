@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPrograms, addProgram, deleteProgram } from '../../redux/program';
 import { Plus, Calendar, Clock, MapPin, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { IoCloseSharp } from "react-icons/io5";
 import { getProfile} from "../../redux/adminprofile";
+
 function Program() {
   const dispatch = useDispatch();
-  const { programs, loading } = useSelector((state) => state.program);
+  const { programs, loading, error } = useSelector((state) => state.program);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
   const [formData, setFormData] = useState({
@@ -17,18 +18,25 @@ function Program() {
     time: '',
     location: '',
     description: '',
-    images: [],
+    images: [], // List of selected images
   });
 
   useEffect(() => {
     dispatch(fetchPrograms());
   }, [dispatch]);
 
-   const { profile } = useSelector((state) => state.adminProfile);
+  const { profile } = useSelector((state) => state.adminProfile);
     
-       useEffect(() => {
-          dispatch(getProfile());
-        }, [dispatch]);
+  useEffect(() => {
+    dispatch(getProfile());
+  }, [dispatch]);
+
+  // Show error toast if there's an error in the Redux state
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   const resetForm = () => {
     setFormData({
@@ -43,24 +51,18 @@ function Program() {
   };
 
   const handleInputChange = (e) => {
-    const { name, value, files } = e.target;
-  
+    const { name, files } = e.target;
+
     if (name === 'image') {
-      if (files.length !== 2) {
-        toast.error('Please select exactly 2 images');
-        e.target.value = ''; // Reset file input
-        return;
-      }
-      
-      // Convert FileList to Array and store
+      // Append the newly selected images to the existing ones
       setFormData({
         ...formData,
-        images: Array.from(files)
+        images: [...formData.images, ...Array.from(files)],
       });
     } else {
       setFormData({
         ...formData,
-        [name]: value,
+        [name]: e.target.value,
       });
     }
   };
@@ -68,35 +70,45 @@ function Program() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (formData.images.length !== 2) {
-      toast.error('Please select exactly 2 images');
+    if (formData.images.length === 0) {
+      toast.error('Please select at least one image.');
       return;
     }
 
     try {
-      await dispatch(addProgram(formData)).unwrap();
-      toast.success('Program added successfully!');
-      resetForm();
-      await dispatch(fetchPrograms()).unwrap();
+      const resultAction = await dispatch(addProgram(formData));
+      
+      if (addProgram.fulfilled.match(resultAction)) {
+        toast.success('Program added successfully!');
+        resetForm();
+      } else if (addProgram.rejected.match(resultAction)) {
+        const errorMessage = resultAction.payload || 'Failed to add program';
+        toast.error(errorMessage);
+      }
     } catch (error) {
-      toast.error(error || 'Failed to add program');
+      toast.error(error.message || 'Failed to add program');
     }
   };
 
   const handleDelete = async (programId) => {
     try {
-      await dispatch(deleteProgram(programId)).unwrap();
-      toast.success('Program deleted successfully!');
-      await dispatch(fetchPrograms()).unwrap();
+      const resultAction = await dispatch(deleteProgram(programId));
+      
+      if (deleteProgram.fulfilled.match(resultAction)) {
+        toast.success('Program deleted successfully!');
+      } else if (deleteProgram.rejected.match(resultAction)) {
+        const errorMessage = resultAction.payload || 'Failed to delete program';
+        toast.error(errorMessage);
+      }
     } catch (error) {
-      toast.error('Failed to delete program');
+      toast.error(error.message || 'Failed to delete program');
     }
   };
 
   const toggleDescription = (programId) => {
     setExpandedDescriptions(prev => ({
       ...prev,
-      [programId]: !prev[programId]
+      [programId]: !prev[programId],
     }));
   };
 
@@ -135,23 +147,35 @@ function Program() {
   }
 
   return (
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     <div className="p-6">
       <div className="flex justify-between items-center mb-6 md:mt-11 flex-col md:flex-row mt-10">
-  <h2 className="text-3xl mb-2 font-medium text-left" style={{fontFamily: 'Inter'}}>
-    Hi,<span className=""> {profile?.loggedinuser?.fullname} </span>
-  </h2>
-  <h2 className="md:text-2xl font-medium text-[#202224]" style={{fontFamily: 'Inter'}}>
-    Our Programs
-  </h2>
-  <button
-    onClick={() => setIsModalOpen(true)}
-    className="bg-[#FCA311] text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-[#e39310] transition-colors mt-4 md:mt-0"
-  >
-    <Plus size={20} />
-    Add Program
-  </button>
-</div>
-
+        <h2 className="text-3xl mb-2 font-medium text-left" style={{ fontFamily: 'Inter' }}>
+          Hi,<span className=""> {profile?.loggedinuser?.fullname} </span>
+        </h2>
+        <h2 className="md:text-2xl font-medium text-[#202224]" style={{ fontFamily: 'Inter' }}>
+          Our Programs
+        </h2>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-[#FCA311] text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-[#e39310] transition-colors mt-4 md:mt-0"
+        >
+          <Plus size={20} />
+          Add Program
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {sortedPrograms.map((program) => {
@@ -160,9 +184,7 @@ function Program() {
             <div
               key={program._id}
               className={`${
-                isPast 
-                  ? 'bg-gray-200 grayscale' 
-                  : 'bg-[#ffba48]'
+                isPast ? 'bg-gray-200 grayscale' : 'bg-[#ffba48]'
               } rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow relative`}
             >
               {isPast && (
@@ -191,8 +213,8 @@ function Program() {
                   </div>
                   <div className="mt-4">
                     <p className={`${isPast ? 'text-gray-600' : 'text-gray-600'}`}>
-                      {expandedDescriptions[program._id] 
-                        ? program.description 
+                      {expandedDescriptions[program._id]
+                        ? program.description
                         : truncateDescription(program.description)}
                     </p>
                     {program.description.split(' ').length > 100 && (
@@ -241,7 +263,7 @@ function Program() {
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-500 hover:text-gray-700"
               >
-                <IoCloseSharp className='h-6 w-6'/>
+                <IoCloseSharp className="h-6 w-6" />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -298,7 +320,7 @@ function Program() {
               </div>
               <div>
                 <label className="block text-sm text-gray-600 mb-2">
-                  Select exactly 2 images
+                  Select 2 Images
                 </label>
                 <input
                   type="file"
@@ -311,7 +333,7 @@ function Program() {
                 />
                 {formData.images.length > 0 && (
                   <p className="text-sm text-gray-600 mt-1">
-                    {formData.images.length} images selected
+                    {formData.images.length} image{formData.images.length > 1 ? 's' : ''} selected
                   </p>
                 )}
               </div>
@@ -326,6 +348,7 @@ function Program() {
         </div>
       )}
     </div>
+    </>
   );
 }
 

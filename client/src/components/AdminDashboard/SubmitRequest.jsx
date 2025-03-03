@@ -5,17 +5,15 @@ import {
   setSelectedView,
   updateRequestStatus,
 } from "../../redux/submitSlice";
-import {
-  ChevronDown,
-  X,
-  Pencil,
-  Calendar,
-} from "lucide-react";
+import { ChevronDown, X, Pencil, Calendar } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { getProfile} from "../../redux/adminprofile";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { getProfile } from "../../redux/adminprofile";
+
+
+
 function DescriptionModal({ isOpen, onClose, description }) {
   if (!isOpen) return null;
 
@@ -49,10 +47,10 @@ function StatusDropdown({ currentStatus, onStatusChange, align = "left" }) {
   const dropdownRef = useRef(null);
 
   const statusOptions = [
-    { value: 'Pending', label: 'Pending' },
+    { value: "Pending", label: "Pending" },
     { value: "Processing", label: "Processing" },
     { value: "Rejected", label: "Rejected" },
-    { value: 'Completed', label: 'Completed' }
+    { value: "Completed", label: "Completed" },
   ];
 
   useEffect(() => {
@@ -122,7 +120,7 @@ function FilterDropdown({
   if (isDate) {
     return (
       <div className="relative" ref={dropdownRef}>
-        <div className="flex items-center p-2 gap-2 md:gap-2 md:px-4 md:py-2 text-[#808080] border border-[#E5E5E5] rounded-lg text-xs md:text-lg">
+        <div className="flex items-center p-2 md:gap-2 md:px-4 md:py-2 text-[#808080] border border-[#E5E5E5] rounded-lg text-xs md:text-lg calendar">
           <DatePicker
             selected={value}
             onChange={onChange}
@@ -130,7 +128,7 @@ function FilterDropdown({
             className="bg-transparent outline-none cursor-pointer"
             placeholderText="Select date"
           />
-          <Calendar className="w-4 h-4" />
+          <Calendar className="w-4 h-4 sm:h-4 sm:w-4 " />
         </div>
       </div>
     );
@@ -304,24 +302,28 @@ function SubmitRequest() {
     try {
       await dispatch(updateRequestStatus({ requestId, newStatus })).unwrap();
       toast.success(`Status updated to ${newStatus} successfully`);
-      dispatch(fetchSubmitRequests({
-        location: selectedView.location,
-        contact: selectedView.contact,
-      }));
+      dispatch(
+        fetchSubmitRequests({
+          location: selectedView.location,
+          contact: selectedView.contact,
+        })
+      );
     } catch (error) {
-      toast.error( error);
+      toast.error(error);
     }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await dispatch(fetchSubmitRequests({
-          location: selectedView.location,
-          contact: selectedView.contact,
-        })).unwrap();
+        await dispatch(
+          fetchSubmitRequests({
+            location: selectedView.location,
+            contact: selectedView.contact,
+          })
+        ).unwrap();
       } catch (error) {
-        toast.error(error || 'Failed to fetch requests');
+        toast.error(error || "Failed to fetch requests");
       }
     };
     fetchData();
@@ -331,11 +333,11 @@ function SubmitRequest() {
     setSelectedDescription(description);
     setModalOpen(true);
   };
- const { profile } = useSelector((state) => state.adminProfile);
+  const { profile } = useSelector((state) => state.adminProfile);
 
-   useEffect(() => {
-      dispatch(getProfile());
-    }, [dispatch]);
+  useEffect(() => {
+    dispatch(getProfile());
+  }, [dispatch]);
 
   const getStatusBadgeClass = (status) => {
     switch (status.toLowerCase()) {
@@ -379,7 +381,7 @@ function SubmitRequest() {
 
   return (
     <>
-       <ToastContainer
+      <ToastContainer
         position="top-right"
         autoClose={3000}
         hideProgressBar={false}
@@ -391,56 +393,69 @@ function SubmitRequest() {
         pauseOnHover
         theme="light"
       />
-      <div className="min-h-screen p-4 md:mt-12 mt-10">
-        <div className="">
+     <div className="min-h-screen p-4 md:mt-12 mt-10">
+        <div className="py-8 mt-10 md:mt-10">
           <div className="flex flex-col gap-6">
-            <div className="flex justify-between items-center">
-                      <h2 className="text-3xl mb-2 font-medium text-left" style={{fontFamily:'Inter'}}>Hi,<span className=""> {profile?.loggedinuser?.fullname} </span></h2>
-                      <h1 className="md:text-2xl font-medium text-[#202224] text-center" style={{fontFamily:'Inter'}}>
-  Submit Request
-</h1>
-
-              {/* <button className="bg-[#FF9500] text-white md:px-4 md:py-2 p-1 rounded-lg">
-                Update Status
-              </button> */}
+            <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start">
+              <h2
+                className="text-3xl sm:text-2xl mb-2 font-medium text-left"
+                style={{ fontFamily: "Inter" }}
+              >
+                Hi,<span className=""> {profile?.loggedinuser?.fullname} </span>
+              </h2>
+              <h1
+                className="text-xl sm:text-2xl font-medium text-center sm:text-left text-[#202224]"
+                style={{ fontFamily: "Inter" }}
+              >
+                Submit Request
+              </h1>
+              <div className="flex items-center gap-2 mt-4 sm:mt-0">
+                {/* <span className="text-sm text-gray-600">Total: {donors?.total || 0}</span> */}
+                {/* <button className="bg-[#FF9500] text-white md:px-4 md:py-2 p-1 rounded-lg">
+          Update Status
+        </button> */}
+              </div>
             </div>
 
-            <div className="flex flex-col md:flex-row gap-2 md:gap-4 ml-4">
-  <FilterDropdown
-    isDate={true}
-    value={selectedDate}
-    onChange={(date) => {
-      setSelectedDate(date);
-    }}
-  />
+            <div className="flex gap-2 flex-row md:gap-4">
+              <FilterDropdown
+                isDate={true}
+                value={selectedDate}
+                onChange={(date) => {
+                  setSelectedDate(date);
+                }}
+              />
 
-<div className="ml-4"> {/* Wrapper for right margin */}
-    <FilterDropdown
-      options={itemTypeOptions}
-      value={selectedItemType}
-      onChange={(type) => {
-        setSelectedItemType(type);
-      }}
-    />
-  </div>
+              <div className="">
+                {" "}
+                {/* Wrapper for right margin */}
+                <FilterDropdown
+                  options={itemTypeOptions}
+                  value={selectedItemType}
+                  onChange={(type) => {
+                    setSelectedItemType(type);
+                  }}
+                />
+              </div>
 
-  <div className="ml-4">
-  <FilterDropdown
-    options={statusOptions}
-    value={selectedStatus}
-    onChange={(status) => {
-      setSelectedStatus(status);
-    }}
-    
-  />
-  </div>
-</div>
-
+              <div className="">
+                <FilterDropdown
+                  options={statusOptions}
+                  value={selectedStatus}
+                  onChange={(status) => {
+                    setSelectedStatus(status);
+                  }}
+                />
+              </div>
+            </div>
 
             <div className="hidden lg:block rounded-xl  shadow">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b bg-[#F1F4F9]" style={{fontFamily:'Inter'}}>
+                  <tr
+                    className="border-b bg-[#F1F4F9]"
+                    style={{ fontFamily: "Inter" }}
+                  >
                     <th className="px-6 py-4 text-left font-medium text-[#202224]">
                       Name
                     </th>
@@ -471,7 +486,9 @@ function SubmitRequest() {
                         onChange={handleContactChange}
                       />
                     </th>
-                    <th className="px-6 py-4 text-left font-medium text-[#202224]">Description</th>
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">
+                      Description
+                    </th>
                     <th className="px-6 py-4 text-left font-medium text-[#202224]">
                       Status
                     </th>
@@ -479,7 +496,11 @@ function SubmitRequest() {
                 </thead>
                 <tbody>
                   {filteredRequests
-                    .filter((item) => item.status === "Pending" || item.status === "Processing")
+                    .filter(
+                      (item) =>
+                        item.status === "Pending" ||
+                        item.status === "Processing"
+                    )
                     .map((item) => (
                       <tr key={item.id} className="border-b last:border-b-0">
                         <td className="px-6 py-4 text-[#202224]">
@@ -515,12 +536,12 @@ function SubmitRequest() {
                               {item.status}
                             </span>
                             <span className="">
-                            <StatusDropdown
-                              currentStatus={item.status}
-                              onStatusChange={(newStatus) =>
-                                handleStatusChange(item.id, newStatus)
-                              }
-                            />
+                              <StatusDropdown
+                                currentStatus={item.status}
+                                onStatusChange={(newStatus) =>
+                                  handleStatusChange(item.id, newStatus)
+                                }
+                              />
                             </span>
                           </div>
                         </td>
@@ -540,7 +561,10 @@ function SubmitRequest() {
                   >
                     <div className="space-y-2">
                       <div className="grid">
-                        <div className="flex items-center justify-between" style={{fontFamily:'Inter'}}>
+                        <div
+                          className="flex items-center justify-between"
+                          style={{ fontFamily: "Inter" }}
+                        >
                           <h1 className="text-left font-medium text-[#202224] text-sm">
                             Name
                           </h1>
@@ -596,7 +620,9 @@ function SubmitRequest() {
                           </h1>
                         </div>
                         <div className="flex items-center justify-between">
-                          <h1 className="text-left font-medium text-[#202224] text-sm">Description</h1>
+                          <h1 className="text-left font-medium text-[#202224] text-sm">
+                            Description
+                          </h1>
                           <button
                             onClick={() => handleOpenModal(item.description)}
                             className="bg-[#FCA311] text-sm py-1 px-2 rounded-lg transition-colors text-white"

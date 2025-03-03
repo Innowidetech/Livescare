@@ -121,7 +121,7 @@ function FilterDropdown({
   if (isDate) {
     return (
       <div className="relative" ref={dropdownRef}>
-        <div className="flex items-center gap-2 p-2 md:gap-2 md:px-4 md:py-2 text-[#808080] border border-[#E5E5E5] rounded-lg text-xs md:text-lg">
+        <div className="flex items-center gap-2 p-2 md:gap-2 md:px-4 md:py-2 text-[#808080] border border-[#E5E5E5] rounded-lg text-xs md:text-lg calendar">
           <DatePicker
             selected={value}
             onChange={onChange}
@@ -386,16 +386,30 @@ function MemberSubmitrequest() {
         theme="light"
       />
       <div className="min-h-screen p-4 md:mt-12 mt-10">
-        <div className="">
+        <div className="py-8 mt-10 md:mt-10">
           <div className="flex flex-col gap-6">
-            <div className="flex justify-between items-center">
-            <h2 className="text-3xl mb-2 font-medium text-left" style={{fontFamily:'Inter'}}>Hi,<span className=""> {profile?.loggedinuser?.fullname} </span></h2>
-              <h1 className="md:text-2xl font-medium text-[#202224]" style={{fontFamily:'Inter'}}>
+            <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start">
+              <h2
+                className="text-3xl sm:text-2xl mb-2 font-medium text-left"
+                style={{ fontFamily: "Inter" }}
+              >
+                Hi,<span className=""> {profile?.loggedinuser?.fullname} </span>
+              </h2>
+              <h1
+                className="text-xl sm:text-2xl font-medium text-center sm:text-left text-[#202224]"
+                style={{ fontFamily: "Inter" }}
+              >
                 Submit Request
               </h1>
+              <div className="flex items-center gap-2 mt-4 sm:mt-0">
+                {/* <span className="text-sm text-gray-600">Total: {donors?.total || 0}</span> */}
+                {/* <button className="bg-[#FF9500] text-white md:px-4 md:py-2 p-1 rounded-lg">
+          Update Status
+        </button> */}
+              </div>
             </div>
 
-            <div className="flex flex-col md:flex-row gap-2 md:gap-4 ml-4">
+            <div className="flex flex-row gap-2 md:gap-4">
               <FilterDropdown
                 isDate={true}
                 value={selectedDate}
@@ -403,7 +417,7 @@ function MemberSubmitrequest() {
                   setSelectedDate(date);
                 }}
               />
-              <div className="ml-4">
+              <div className="">
               <FilterDropdown
                 options={itemTypeOptions}
                 value={selectedItemType}
@@ -412,7 +426,7 @@ function MemberSubmitrequest() {
                 }}
               />
               </div>
-              <div className="ml-4">
+              <div className="">
               <FilterDropdown
                 options={statusOptions}
                 value={selectedStatus}

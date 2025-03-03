@@ -32,22 +32,32 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (!username || !password) {
+      toast.error('Please enter both username and password');
+      return;
+    }
+    
     try {
       const result = await dispatch(loginUser({ username, password })).unwrap();
-      if (result) {
-        toast.success('Login successful!');
-        // Navigate based on user role from the login response
-        const userRole = result.role; // Assuming the role is returned in the login response
-        localStorage.setItem('userRole', userRole);
-        
+      
+      // Store user role first
+      const userRole = result.role;
+      localStorage.setItem('userRole', userRole);
+      
+      // Show success toast and delay navigation
+      toast.success('Login successful!');
+      
+      // Delay navigation to allow toast to be visible
+      setTimeout(() => {
         if (userRole === 'admin') {
           navigate('/admin');
         } else if (userRole === 'member') {
           navigate('/member');
         }
-      }
+      }, 1500); // Delay navigation by 1.5 seconds to ensure toast is visible
+      
     } catch (err) {
-      toast.error(error || 'Login failed');
+      toast.error(err || 'Login failed. Please try again.');
     }
   };
 
@@ -125,9 +135,9 @@ const Login = () => {
           <div className="mt-4 text-center text-gray-700">
             <p>
               Don't have an account?{' '}
-              <a href="/registration" className="text-black font-semibold hover:text-blue-400">
+              <Link to="/registration" className="text-black font-semibold hover:text-blue-400">
                 Register
-              </a>
+              </Link>
             </p>
           </div>
 

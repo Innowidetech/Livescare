@@ -33,7 +33,7 @@ function DescriptionModal({ isOpen, onClose, description }) {
   );
 }
 
-function StatusDropdown({ currentStatus, onStatusChange, align = 'right' }) {
+function StatusDropdown({ currentStatus, onStatusChange, align = 'left' }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   
@@ -65,12 +65,12 @@ function StatusDropdown({ currentStatus, onStatusChange, align = 'right' }) {
       </button>
       {isOpen && (
         <div 
-          className={`absolute z-20 mt-1 ${align === 'right' ? 'right-0' : 'left-0'} bg-white border border-gray-200 rounded-lg shadow-lg py-1 min-w-[120px]`}
+          className={`absolute z-20 mt-1 ${align === 'right' ? 'right-0' : '-left-24 top-6'} bg-white border border-gray-200 rounded-lg shadow-lg py-1 min-w-[120px]`}
         >
           {statusOptions.map((option) => (
             <button
               key={option.value}
-              className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors"
+              className="w-full text-left px-2 py-2 text-sm hover:bg-gray-100 transition-colors"
               onClick={() => {
                 onStatusChange(option.value);
                 setIsOpen(false);
@@ -85,7 +85,7 @@ function StatusDropdown({ currentStatus, onStatusChange, align = 'right' }) {
   );
 }
 
-function FilterDropdown({ options, value, onChange, align = 'left', isDate = false }) {
+function FilterDropdown({ options, value, onChange, align = 'right', isDate = false }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -103,7 +103,7 @@ function FilterDropdown({ options, value, onChange, align = 'left', isDate = fal
   if (isDate) {
     return (
       <div className="relative" ref={dropdownRef}>
-        <div className="flex items-center gap-2 p-2 md:gap-2 md:px-4 md:py-2 text-[#808080] border border-[#E5E5E5] rounded-lg text-xs md:text-lg">
+        <div className="flex items-center p-2 md:gap-2 md:px-4 md:py-2 text-[#808080] border border-[#E5E5E5] rounded-lg text-xs md:text-lg calendar">
           <DatePicker
             selected={value}
             onChange={onChange}
@@ -111,7 +111,7 @@ function FilterDropdown({ options, value, onChange, align = 'left', isDate = fal
             className="bg-transparent outline-none cursor-pointer"
             placeholderText="Select date"
           />
-          <Calendar className="w-4 h-4" />
+          <Calendar className="w-4 h-4 sm:h-4 sm:w-4" />
         </div>
       </div>
     );
@@ -121,14 +121,14 @@ function FilterDropdown({ options, value, onChange, align = 'left', isDate = fal
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 p-2 md:gap-2 md:px-4 md:py-2 text-[#808080] border border-[#E5E5E5] rounded-lg text-xs md:text-lg"
+        className="flex items-center p-2 gap-2 md:gap-2 md:px-4 md:py-2 text-[#808080] border border-[#E5E5E5] rounded-lg text-xs md:text-lg"
       >
         <span>{value}</span>
         <ChevronDown className="w-4 h-4" />
       </button>
       {isOpen && (
         <div 
-          className={`absolute z-10 mt-1 ${align === 'right' ? 'right-0' : 'left-0'} bg-white -ml-20 md:-ml-0 border border-gray-200 rounded-lg shadow-lg py-1 min-w-[120px]`}
+          className={`absolute z-10 mt-1 -ml-20 md:-ml-0 ${align === 'right' ? 'right-0' : 'left-0'} bg-white border border-gray-200 rounded-lg shadow-lg py-1 min-w-[120px]`}
         >
           {options.map((option) => (
             <button
@@ -242,6 +242,12 @@ function DonorRequestHistory() {
     }));
   }, [dispatch, selectedView]);
 
+  const { profile } = useSelector((state) => state.adminProfile);
+  
+  useEffect(() => {
+    dispatch(getProfile());
+  }, [dispatch]);
+
   useEffect(() => {
     if (donors?.donors) {
       let filtered = [...donors.donors];
@@ -281,25 +287,30 @@ function DonorRequestHistory() {
     dispatch(setSelectedView({ contact: value }));
   };
 
-  const { profile } = useSelector((state) => state.adminProfile);
-  
-     useEffect(() => {
-        dispatch(getProfile());
-      }, [dispatch]);
-  
-
   const handleStatusChange = async (donorId, newStatus) => {
     try {
       await dispatch(updateDonorStatus({ donorId, newStatus })).unwrap();
       toast.success(`Status updated to ${newStatus} successfully`);
+      dispatch(fetchDonors({
+        place: selectedView.place,
+        contact: selectedView.contact
+      }));
     } catch (error) {
-      toast.error( error);
+      toast.error(error);
     }
   };
 
   const handleOpenModal = (description) => {
     setSelectedDescription(description);
     setModalOpen(true);
+  };
+
+  const getPlaceValue = (item) => {
+    return item[selectedView.place] || "N/A";
+  };
+
+  const getContactValue = (item) => {
+    return item[selectedView.contact] || "N/A";
   };
 
   const getStatusBadgeClass = (status) => {
@@ -335,7 +346,6 @@ function DonorRequestHistory() {
 
   return (
     <>
-      {/* <Header /> */}
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -348,28 +358,26 @@ function DonorRequestHistory() {
         pauseOnHover
         theme="light"
       />
-      <div className="min-h-screen p-4 ">
-      <div className=" py-8 mt-10 ">
-  <div className="flex flex-col gap-6">
-    <div className="flex flex-col sm:flex-row justify-between items-center">
-      <h2 className="text-3xl mb-2 font-medium text-left" style={{fontFamily: 'Inter'}}>
-        Hi,<span className=""> {profile?.loggedinuser?.fullname} </span>
-      </h2>
-      <h1 className="md:text-2xl font-medium text-[#202224]" style={{fontFamily: 'Inter'}}>
-        Donor Request History
-      </h1>
-      <div className="flex items-center gap-2 mt-4 sm:mt-0">
-        {/* <span className="text-sm text-gray-600">Total: {donors?.total || 0}</span> */}
-        {/* <button className="bg-[#FF9500] text-white md:px-4 md:py-2 p-1 rounded-lg">
-          Update Status
-        </button> */}
-      </div>
-    </div>
- 
-
+      <div className="min-h-screen p-4 md:mt-12 mt-10">
+        <div className="py-8 mt-10 md:mt-10">
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start">
+              <h2 className="text-3xl sm:text-2xl mb-2 font-medium text-left" style={{fontFamily: 'Inter'}}>
+                Hi,<span className=""> {profile?.loggedinuser?.fullname} </span>
+              </h2>
+              <h1 className="text-xl sm:text-2xl font-medium text-center sm:text-left text-[#202224]" style={{fontFamily: 'Inter'}}>
+                Donor Request History
+              </h1>
+              <div className="flex items-center gap-2 mt-4 sm:mt-0">
+                {/* <span className="text-sm text-gray-600">Total: {donors?.total || 0}</span> */}
+                {/* <button className="bg-[#FF9500] text-white md:px-4 md:py-2 p-1 rounded-lg">
+                  Update Status
+                </button> */}
+              </div>
+            </div>
 
             {/* Filters */}
-            <div className="flex gap-2 md:gap-4 -ml-8 md:-ml-0">
+            <div className="flex gap-2 flex-row md:gap-4">
               <FilterDropdown 
                 isDate={true}
                 value={selectedDate}
@@ -377,63 +385,71 @@ function DonorRequestHistory() {
                   setSelectedDate(date);
                 }}
               />
-              <FilterDropdown
-                options={itemTypeOptions}
-                value={selectedItemType}
-                onChange={(type) => {
-                  setSelectedItemType(type);
-                }}
-              />
-              <FilterDropdown
-                options={statusOptions}
-                value={selectedStatus}
-                onChange={(status) => {
-                  setSelectedStatus(status);
-                }}
-              />
+
+              <div className="">
+                <FilterDropdown
+                  options={itemTypeOptions}
+                  value={selectedItemType}
+                  onChange={(type) => {
+                    setSelectedItemType(type);
+                  }}
+                />
+              </div>
+
+              <div className="">
+                <FilterDropdown
+                  options={statusOptions}
+                  value={selectedStatus}
+                  onChange={(status) => {
+                    setSelectedStatus(status);
+                  }}
+                />
+              </div>
             </div>
 
             {/* Desktop View */}
-            <div className="hidden lg:block rounded-xl shadow w-fit">
+            <div className="hidden lg:block rounded-xl shadow">
               <table className="w-full">
                 <thead>
                   <tr className="border-b bg-[#F1F4F9]" style={{fontFamily:'Inter'}}>
-                    <th className="px-4 py-4 text-left font-medium text-[#202224]">Name</th>
-                    <th className="px-4 py-4 text-left font-medium text-[#202224]">Item Name</th>
-                    <th className="px-4 py-4 text-left font-medium text-[#202224]">Count / Amount</th>
-                    <th className="px-4 py-4 text-left font-medium text-[#202224]">Date</th>
-                    <th className="px-4 py-4 text-left font-medium text-[#202224]">
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">Name</th>
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">Item Name</th>
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">Count / Amount</th>
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">Date</th>
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">
                       <DropdownMenu
                         options={placeOptions}
                         value={selectedView.place.charAt(0).toUpperCase() + selectedView.place.slice(1)}
                         onChange={handlePlaceChange}
                       />
                     </th>
-                    <th className="px-4 py-4 text-left font-medium text-[#202224]">
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">
                       <DropdownMenu
                         options={contactOptions}
                         value={selectedView.contact === 'mobileNumber' ? 'Phone Number' : 'Email'}
                         onChange={handleContactChange}
                       />
                     </th>
-                    <th className="px-4 py-4 text-left font-medium text-[#202224]">Description</th>
-                    <th className="px-4 py-4 text-left font-medium text-[#202224]">Status</th>
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">Description</th>
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredDonors.filter((item) => item.status === "Completed" ).map((donation) => (
+                  {filteredDonors.filter((item) => item.status === "Completed" || item.status === "Rejected").map((donation) => (
                     <tr key={donation.id} className="border-b last:border-b-0">
-                      <td className="px-4 py-4 text-[#202224]">{donation.name}</td>
-                      <td className="px-4 py-4 text-[#202224]">{donation.itemName}</td>
-                      <td className="px-4 py-4 text-[#202224]"> {donation.count
-                              ? donation.count
-                              : (donation.amount ? `$${donation.amount.toFixed(2)}` : '--')}</td>
-                      <td className="px-4 py-4 text-[#202224]">
+                      <td className="px-6 py-4 text-[#202224]">{donation.name}</td>
+                      <td className="px-6 py-4 text-[#202224]">{donation.itemName}</td>
+                      <td className="px-6 py-4 text-[#202224]">
+                        {donation.count
+                          ? donation.count
+                          : (donation.amount ? `$${donation.amount.toFixed(2)}` : '--')}
+                      </td>
+                      <td className="px-6 py-4 text-[#202224]">
                         {new Date(donation.createdAt).toLocaleDateString()}
                       </td>
-                      <td className="px-4 py-4 text-[#202224]">{donation[selectedView.place] || 'N/A'}</td>
-                      <td className="px-4 py-4 text-[#202224]">{donation[selectedView.contact] || 'N/A'}</td>
-                      <td className="px-4 py-4">
+                      <td className="px-6 py-4 text-[#202224]">{getPlaceValue(donation)}</td>
+                      <td className="px-6 py-4 text-[#202224]">{getContactValue(donation)}</td>
+                      <td className="px-6 py-4">
                         <button
                           onClick={() => handleOpenModal(donation.description)}
                           className="bg-[#FCA311] text-sm py-2 px-3 rounded-lg transition-colors text-white"
@@ -446,10 +462,12 @@ function DonorRequestHistory() {
                           <span className={`px-3 py-1 font-medium rounded-lg w-[100px] ${getStatusBadgeClass(donation.status)}`}>
                             {donation.status}
                           </span>
-                          <StatusDropdown
-                            currentStatus={donation.status}
-                            onStatusChange={(newStatus) => handleStatusChange(donation.id, newStatus)}
-                          />
+                          <span className="">
+                            <StatusDropdown
+                              currentStatus={donation.status}
+                              onStatusChange={(newStatus) => handleStatusChange(donation.id, newStatus)}
+                            />
+                          </span>
                         </div>
                       </td>
                     </tr>
@@ -460,7 +478,7 @@ function DonorRequestHistory() {
 
             {/* Mobile View */}
             <div className="lg:hidden space-y-4">
-              {filteredDonors.filter((item) => item.status === "Completed" ).map((donation) => (
+              {filteredDonors.filter((item) => item.status === "Completed" || item.status === "Rejected").map((donation) => (
                 <div key={donation.id} className="bg-[#FCFDFD] rounded-xl p-4 space-y-4">
                   <div className="space-y-2">
                     <div className="grid">
@@ -474,9 +492,11 @@ function DonorRequestHistory() {
                       </div>
                       <div className='flex items-center justify-between'>
                         <h1 className="text-left font-medium text-[#202224] text-sm">Count / Amount</h1>
-                        <h1 className="py-4 text-[#202224]"> {donation.count
-                              ? donation.count
-                              : (donation.amount ? `$${donation.amount.toFixed(2)}` : '--')}</h1>
+                        <h1 className="py-4 text-[#202224]">
+                          {donation.count
+                            ? donation.count
+                            : (donation.amount ? `$${donation.amount.toFixed(2)}` : '--')}
+                        </h1>
                       </div>
                       <div className='flex items-center justify-between'>
                         <h1 className="text-left font-medium text-[#202224] text-sm">Date</h1>
@@ -491,7 +511,7 @@ function DonorRequestHistory() {
                             align="right"
                           />
                         </h1>
-                        <h1 className="py-4 text-[#202224]">{donation[selectedView.place] || 'N/A'}</h1>
+                        <h1 className="py-4 text-[#202224]">{getPlaceValue(donation)}</h1>
                       </div>
                       <div className='flex items-center justify-between'>
                         <h1 className="text-left font-medium text-[#202224] text-sm">
@@ -502,10 +522,10 @@ function DonorRequestHistory() {
                             align="right"
                           />
                         </h1>
-                        <h1 className="py-4 text-[#202224]">{donation[selectedView.contact] || 'N/A'}</h1>
+                        <h1 className="py-4 text-[#202224]">{getContactValue(donation)}</h1>
                       </div>
                       <div className='flex items-center justify-between'>
-                        <h1 className="text-left font-medium text-[#202224]">Description</h1>
+                        <h1 className="text-left font-medium text-[#202224] text-sm">Description</h1>
                         <button
                           onClick={() => handleOpenModal(donation.description)}
                           className="bg-[#FCA311] text-sm py-1 px-2 rounded-lg transition-colors text-white"
@@ -515,7 +535,7 @@ function DonorRequestHistory() {
                       </div>
                       <div className='flex items-center justify-between'>
                         <h1 className="text-left font-medium text-[#202224] text-sm">Status</h1>
-                        <div className="flex items-center gap-2 pt-4">
+                        <div className="flex items-center gap-2 pt-4 justify-between">
                           <span className={`px-3 py-1 font-medium rounded-lg w-[100px] ${getStatusBadgeClass(donation.status)}`}>
                             {donation.status}
                           </span>
