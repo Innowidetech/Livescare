@@ -431,7 +431,7 @@ function MemberCertificate() {
           </div>
 
           {/* Desktop Table View */}
-          <div className="hidden lg:block bg-white rounded-lg shadow overflow-hidden">
+          <div className="hidden lg:block bg-white rounded-lg shadow overflow-hidden mx-4">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-[#F1F4F9]">
                 <tr>

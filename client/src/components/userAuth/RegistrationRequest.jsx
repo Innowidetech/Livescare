@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faWhatsapp, faLinkedin, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { registerUser } from '../../redux/RegisterationSlice';
 import { toast } from 'react-toastify';
+import Loginimg from '../../Assets/Loginimg.png';
 
 const RegistrationRequest = () => {
   const dispatch = useDispatch();
@@ -172,7 +173,7 @@ const RegistrationRequest = () => {
       {/* Right side with orange background and image */}
       <div className="w-full md:w-1/2 bg-[#FCA311] relative flex justify-center items-end">
         <img
-          src="/Assets/Loginimg.png"
+          src={Loginimg}
           alt="Background"
           className="w-full object-cover mr-44"
         />

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getProfile } from "../../../redux/adminprofile";
 import { useDispatch, useSelector } from "react-redux";
 import { FaRegUserCircle } from "react-icons/fa";
+import Logo from '../../../Assets/logo1.png'
 
 const AdminHeader = () => {
   const navigate = useNavigate();
@@ -18,10 +19,11 @@ const AdminHeader = () => {
   };
 
   return (
+    <>
     <header className="fixed top-0 left-0 right-0 z-20 opacity-100 md:backdrop-blur-xl bg-white  text-gray-800 p-4 flex items-center flex-wrap md:flex-nowrap md:pl-64 -mt-10 md:-mt-0">
       <div className="md:hidden flex items-center mt-8 ml-8">
         <img
-          src="/Assets/logo1.png"
+          src={Logo}
           alt="Logo"
           className="h-10"
           onClick={() => navigate("/admin")}
@@ -59,6 +61,7 @@ const AdminHeader = () => {
         </div>
       </div>
     </header>
+    </>
   );
 };
 

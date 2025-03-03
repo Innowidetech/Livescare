@@ -1,4 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import Gallery6 from '../Assets/gallery6.png';
+import Charity from '../Assets/Aboutmeeting.png'
+import Gallery1 from '../Assets/gallery1.jfif';
+import Gallery2 from '../Assets/gallery2.jfif';
+import Gallery3 from '../Assets/gallery3.jfif';
+import Gallery4 from '../Assets/gallery4.png';
+import Gallery5 from '../Assets/gallery5.png';
 
 const AboutUs = () => {
   const [aboutUsData, setAboutUsData] = useState([]);
@@ -21,7 +28,7 @@ const AboutUs = () => {
   if (!aboutUsData) {
     return <div>Loading...</div>; // Show loading until the data is fetched
   }
-console.log(aboutUsData)
+// console.log(aboutUsData)
 
   return (
     <div className="relative">
@@ -50,7 +57,7 @@ console.log(aboutUsData)
       {/* Image section */}
       <div className="relative z-10 md:mb-20 sm:mb-32 mb-10 ">
         <img
-          src="Assets/Aboutmeeting.png"
+          src={Charity}
           alt="Charity"
           className="w-[90vw] sm:w-[80vw] md:w-[70vw] lg:w-[65vw] xl:w-[55vw] max-h-[40vh] sm:max-h-[30vh] md:max-h-[30vh] lg:max-h-[50vh] xl:max-h-[50vh] object-cover rounded-lg shadow-lg mx-auto"
         />
@@ -130,7 +137,7 @@ console.log(aboutUsData)
             {/* Image 1 */}
             <div className="overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:scale-105 hover:rotate-3 hover:shadow-2xl hover:opacity-90">
               <img
-                src="Assets/gallery1.jfif"
+                src={Gallery1}
                 alt="Gallery Image 1"
                 className="w-full h-auto object-cover transition-opacity duration-500"
               />
@@ -138,7 +145,7 @@ console.log(aboutUsData)
             {/* Image 2 */}
             <div className="overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:scale-105 hover:rotate-3 hover:shadow-2xl hover:opacity-90">
               <img
-                src="Assets/gallery2.jfif"
+                src={Gallery2}
                 alt="Gallery Image 2"
                 className="w-full h-auto object-cover transition-opacity duration-500"
               />
@@ -146,7 +153,7 @@ console.log(aboutUsData)
             {/* Image 3 */}
             <div className="overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:scale-105 hover:rotate-3 hover:shadow-2xl hover:opacity-90">
               <img
-                src="Assets/gallery3.jfif"
+                src={Gallery3}
                 alt="Gallery Image 3"
                 className="w-full h-auto object-cover transition-opacity duration-500"
               />
@@ -155,7 +162,7 @@ console.log(aboutUsData)
             {/* Image 4 */}
   <div className="overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:scale-105 hover:rotate-3 hover:shadow-2xl hover:opacity-90">
     <img
-      src="Assets/gallery4.png"
+      src={Gallery4}
       alt="Gallery Image 4"
       className="w-full h-auto object-cover transition-opacity duration-500"
     />
@@ -164,7 +171,7 @@ console.log(aboutUsData)
   {/* Image 5 */}
   <div className="overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:scale-105 hover:rotate-3 hover:shadow-2xl hover:opacity-90">
     <img
-      src="Assets/gallery5.png"
+      src={Gallery5}
       alt="Gallery Image 5"
       className="w-full h-auto object-cover transition-opacity duration-500"
     />
@@ -173,7 +180,7 @@ console.log(aboutUsData)
   {/* Image 6 */}
   <div className="overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:scale-105 hover:rotate-3 hover:shadow-2xl hover:opacity-90">
     <img
-      src="Assets/gallery6.png"
+      src={Gallery6}
       alt="Gallery Image 6"
       className="w-full h-auto object-cover transition-opacity duration-500"
     />

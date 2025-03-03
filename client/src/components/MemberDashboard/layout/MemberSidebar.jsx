@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { LayoutDashboard, FileText, UserPlus, CreditCard, History, Award, Menu, X } from 'lucide-react';
 import { CiLogout } from "react-icons/ci";
 import { logoutUser } from '../../../redux/LoginSlice';
+import Logo from '../../../Assets/logo1.png'
 
 const menuItems = [
   { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -69,7 +70,7 @@ const MemberSidebar = ({ setActiveTab, activeTab }) => {
         <div className="px-6 py-6">
         <div className="px-6 py-6">
         <div className="flex items-center justify-center">
-          <img src="/Assets/logo1.png" alt="Logo" className="h-20 w-20" />
+          <img src={Logo} alt="Logo" className="h-20 w-20" />
         </div>
          
         </div>

@@ -1,4 +1,9 @@
 import React, { useState } from 'react';
+import Teddy from '../Assets/teddy.png';
+import Donation from '../Assets/donationbox.png';
+import SingleHand from '../Assets/singlehand.png';
+import DiubleHand from '../Assets/doublehand.png';
+
 
 const SubmitRequest = () => {
   const [formData, setFormData] = useState({
@@ -62,10 +67,10 @@ const SubmitRequest = () => {
 
         {/* Image Container at Bottom */}
         <div className="flex justify-center gap-0 mt-auto sm:gap-4 md:gap-14">
-          <img className="w-20 h-20 sm:w-14 sm:h-24 md:w-28 md:h-24 object-cover rounded-lg" src="Assets/teddy.png" alt="image1" />
-          <img className="w-20 h-20 sm:w-14 sm:h-24 md:w-28 md:h-24 object-cover rounded-lg" src="Assets/donationbox.png" alt="image2" />
-          <img className="w-20 h-20 sm:w-14 sm:h-24 md:w-28 md:h-24 object-cover rounded-lg" src="Assets/singlehand.png" alt="image3" />
-          <img className="w-20 h-20 sm:w-14 sm:h-24 md:w-28 md:h-24 object-cover rounded-lg" src="Assets/doublehand.png" alt="image4" />
+          <img className="w-20 h-20 sm:w-14 sm:h-24 md:w-28 md:h-24 object-cover rounded-lg" src={Teddy} alt="image1" />
+          <img className="w-20 h-20 sm:w-14 sm:h-24 md:w-28 md:h-24 object-cover rounded-lg" src={Donation} alt="image2" />
+          <img className="w-20 h-20 sm:w-14 sm:h-24 md:w-28 md:h-24 object-cover rounded-lg" src={SingleHand} alt="image3" />
+          <img className="w-20 h-20 sm:w-14 sm:h-24 md:w-28 md:h-24 object-cover rounded-lg" src={DiubleHand} alt="image4" />
         </div>
       </div>
 

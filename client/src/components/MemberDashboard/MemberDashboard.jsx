@@ -261,14 +261,14 @@ const MemberDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-6">
           <div className="bg-white p-4 sm:p-6 shadow-lg rounded-lg border border-gray-300">
             <div className="flex justify-between mb-4 flex-wrap">
-              <div className="text-lg font-bold sm:text-xl w-full sm:w-auto text-[#1e1e1e]" style={{fontFamily:'Inter'}}>Donor Requests</div>
+              <div className="text-lg font-medium sm:text-xl w-full sm:w-auto text-[#1e1e1e]" style={{fontFamily:'Inter'}}>Donor Requests</div>
               <div className="flex items-center bg-[#fcfdfd] border border-[#d5d5d5] rounded-md px-3 py-2 sm:px-4 sm:py-3 w-full sm:w-auto justify-between mt-2 sm:mt-0">
                 <DatePicker
                   selected={selectedDate}
                   onChange={handleDateChange}
                   dateFormat="MMMM yyyy"
                   showMonthYearPicker
-                  className="bg-transparent text-[#1e1e1e] opacity-60  text-xs sm:text-sm md:text-base cursor-pointer"
+                  className="bg-transparent text-[#2b3034] opacity-60  text-xs sm:text-sm md:text-base cursor-pointer"
                 />
               </div>
             </div>

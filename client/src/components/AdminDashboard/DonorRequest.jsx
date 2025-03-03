@@ -409,23 +409,23 @@ function DonorRequest() {
             </div>
 
             {/* Desktop View */}
-            <div className="hidden lg:block rounded-xl shadow  w-fit">
+            <div className="hidden lg:block rounded-xl shadow w-fit">
               <table className="w-full ">
                 <thead>
                   <tr className="border-b bg-[#F1F4F9]" style={{ fontFamily: 'Inter' }}>
-                    <th className="px-4 py-4 text-left font-medium text-[#202224]">
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">
                       Name
                     </th>
-                    <th className="px-4 py-4 text-left font-medium text-[#202224]">
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">
                       Item Name
                     </th>
-                    <th className="px-4 py-4 text-left font-medium text-[#202224]">
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">
                       Count / Amount
                     </th>
-                    <th className="px-4 py-4 text-left font-medium text-[#202224]">
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">
                       Date
                     </th>
-                    <th className="px-4 py-4 text-left font-medium text-[#202224]">
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">
                       <DropdownMenu
                         options={placeOptions}
                         value={
@@ -446,70 +446,12 @@ function DonorRequest() {
                         onChange={handleContactChange}
                       />
                     </th>
-                    <th className="px-4 py-4 text-left font-medium text-[#202224]">Description</th>
-                    <th className="px-4 py-4 text-left font-medium text-[#202224]">
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">Description</th>
+                    <th className="px-6 py-4 text-left font-medium text-[#202224]">
                       Status
                     </th>
                   </tr>
                 </thead>
-                {/* <tbody>
-                  {filteredDonors
-                    .filter((donation) => donation.status === "Pending" || donation.status === "Processing")
-                    .map((donation) => (
-                      <tr
-                        key={donation.id}
-                        className="border-b last:border-b-0"
-                      >
-                        <td className="px-6 py-4 text-[#202224]">
-                          {donation.name}
-                        </td>
-                        <td className="px-6 py-4 text-[#202224]">
-                          {donation.itemName}
-                        </td>
-                        <td className="px-6 py-4 text-[#202224]">
-                          {donation.count
-                            ? donation.count
-                            : (donation.amount ? `$ ${donation.amount.toFixed(2)}` : '--')}
-                        </td>
-                        <td className="px-6 py-4 text-[#202224]">
-                          {new Date(donation.createdAt).toLocaleDateString()}
-                        </td>
-                        <td className="px-6 py-4 text-[#202224]">
-                          {donation[selectedView.place] || "N/A"}
-                        </td>
-                        <td className="px-6 py-4 text-[#202224]">
-                          {donation[selectedView.contact] || "N/A"}
-                        </td>
-                        <td className="px-6 py-4">
-                          <button
-                            onClick={() =>
-                              handleOpenModal(donation.description)
-                            }
-                            className="bg-[#FCA311] text-sm py-2 px-3 rounded-lg transition-colors text-white"
-                          >
-                            Message
-                          </button>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <span
-                              className={`px-3 py-1 font-medium rounded-lg w-[100px] ${getStatusBadgeClass(
-                                donation.status
-                              )}`}
-                            >
-                              {donation.status}
-                            </span>
-                            <StatusDropdown
-                              currentStatus={donation.status}
-                              onStatusChange={(newStatus) =>
-                                handleStatusChange(donation.id, newStatus)
-                              }
-                            />
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody> */}
                 <tbody>
                   {filteredDonors
                     .filter((donation) => donation.status === "Pending" || donation.status === "Processing")
@@ -517,27 +459,27 @@ function DonorRequest() {
                       console.log(donation);  // Logs the donation object
                       return (
                         <tr key={donation.id} className="border-b last:border-b-0">
-                          <td className="px-4 py-4 text-[#202224]">
+                          <td className="px-6 py-4 text-[#202224]">
                             {donation.name}
                           </td>
-                          <td className="px-4 py-4 text-[#202224]">
+                          <td className="px-6 py-4 text-[#202224]">
                             {donation.itemName}
                           </td>
-                          <td className="px-4 py-4 text-[#202224]">
+                          <td className="px-6 py-4 text-[#202224]">
                             {donation.count
                               ? donation.count
                               : (donation.amount ? `$${donation.amount.toFixed(2)}` : '--')}
                           </td>
-                          <td className="px-4 py-4 text-[#202224]">
+                          <td className="px-6 py-4 text-[#202224]">
                             {new Date(donation.createdAt).toLocaleDateString()}
                           </td>
-                          <td className="px-4 py-4 text-[#202224]">
+                          <td className="px-6 py-4 text-[#202224]">
                             {donation[selectedView.place] || "N/A"}
                           </td>
-                          <td className="px-4 py-4 text-[#202224]">
+                          <td className="px-6 py-4 text-[#202224]">
                             {donation[selectedView.contact] || "N/A"}
                           </td>
-                          <td className="px-4 py-4">
+                          <td className="px-6 py-4">
                             <button
                               onClick={() =>
                                 handleOpenModal(donation.description)

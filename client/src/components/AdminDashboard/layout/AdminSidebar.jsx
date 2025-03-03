@@ -6,6 +6,7 @@ import { CiLogout } from "react-icons/ci";
 import { logoutUser } from '../../../redux/LoginSlice';
 import { FaEdit } from "react-icons/fa";
 import { CiCircleList } from "react-icons/ci";
+import Logo from '../../../Assets/logo1.png';
 
 const menuItems = [
   { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -77,7 +78,7 @@ const AdminSidebar = ({ setActiveTab, activeTab }) => {
         {/* Logo/Title */}
         <div className="px-6 py-6">
         <div className="flex items-center justify-center">
-          <img src="/Assets/logo1.png" alt="Logo" className="h-20 w-20" />
+          <img src={Logo} alt="Logo" className="h-20 w-20" />
         </div>
          
         </div>

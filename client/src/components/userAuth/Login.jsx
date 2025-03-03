@@ -5,6 +5,11 @@ import { toast } from 'react-toastify';
 import { Facebook, Twitter, Linkedin, MessageCircle } from 'lucide-react';
 import { loginUser } from '../../redux/LoginSlice';
 import { Link } from 'react-router-dom';
+import Loginimg from '../../Assets/Loginimg.png'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -47,6 +52,19 @@ const Login = () => {
   };
 
   return (
+    <>
+     <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     <div className="flex flex-col md:flex-row h-screen">
       {/* Left side with login form */}
       <div className="w-full md:w-1/1 flex justify-center items-center bg-white p-4 md:p-0">
@@ -134,12 +152,13 @@ const Login = () => {
       {/* Right side with orange background and image at the bottom */}
       <div className="w-full md:w-1/2 bg-[#FCA311] relative flex justify-center items-end">
         <img
-          src="/Assets/Loginimg.png"
+          src={Loginimg}
           alt="Background"
           className="w-full object-cover md:mr-44"
         />
       </div>
     </div>
+    </>
   );
 };
 

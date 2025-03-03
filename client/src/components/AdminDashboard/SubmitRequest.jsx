@@ -102,7 +102,7 @@ function FilterDropdown({
   options,
   value,
   onChange,
-  align = "left",
+  align = "right",
   isDate = false,
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -405,32 +405,39 @@ function SubmitRequest() {
               </button> */}
             </div>
 
-            <div className="flex gap-2 md:gap-4">
-              <FilterDropdown
-                isDate={true}
-                value={selectedDate}
-                onChange={(date) => {
-                  setSelectedDate(date);
-                }}
-              />
-              
-              <FilterDropdown
-                options={itemTypeOptions}
-                value={selectedItemType}
-                onChange={(type) => {
-                  setSelectedItemType(type);
-                }}
-              />
-              <FilterDropdown
-                options={statusOptions}
-                value={selectedStatus}
-                onChange={(status) => {
-                  setSelectedStatus(status);
-                }}
-              />
-            </div>
+            <div className="flex flex-col md:flex-row gap-2 md:gap-4 ml-4">
+  <FilterDropdown
+    isDate={true}
+    value={selectedDate}
+    onChange={(date) => {
+      setSelectedDate(date);
+    }}
+  />
 
-            <div className="hidden lg:block rounded-xl shadow  ">
+<div className="ml-4"> {/* Wrapper for right margin */}
+    <FilterDropdown
+      options={itemTypeOptions}
+      value={selectedItemType}
+      onChange={(type) => {
+        setSelectedItemType(type);
+      }}
+    />
+  </div>
+
+  <div className="ml-4">
+  <FilterDropdown
+    options={statusOptions}
+    value={selectedStatus}
+    onChange={(status) => {
+      setSelectedStatus(status);
+    }}
+    
+  />
+  </div>
+</div>
+
+
+            <div className="hidden lg:block rounded-xl  shadow">
               <table className="w-full">
                 <thead>
                   <tr className="border-b bg-[#F1F4F9]" style={{fontFamily:'Inter'}}>

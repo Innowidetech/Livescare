@@ -206,7 +206,7 @@ function Certificate() {
   return (
     <>
       <div>{/* <Header /> */}</div>
-      <div className="min-h-screen mt-12 md:mt-14">
+      <div className="min-h-screen">
         <h2 className="text-3xl mb-2 font-medium text-left" style={{fontFamily:'Inter'}}>Hi,<span className=""> {profile?.loggedinuser?.fullname} </span></h2>
         <ToastContainer />
         <div className="px-4 sm:px-6 lg:px-8 py-8">
@@ -221,24 +221,24 @@ function Certificate() {
             <div className="flex space-x-4">
               <button
                 onClick={() => setActiveView("all")}
-                className={`flex items-center md:px-4 md:py-2b px-1 py-2 rounded-lg text-xs ${
+                className={`flex items-center md:px-4 md:py-2 rounded-lg cursor-pointer ${
                   activeView === "all"
                     ? "bg-[#fca311] text-white"
                     : "bg-white text-gray-700 hover:bg-gray-50"
                 } transition-colors duration-200`}
               >
-                <Award className="w-4 h-4 mr-1" />
+                <Award className="w-5 h-5 mr-2" />
                 All Certificates
               </button>
               <button
                 onClick={() => setActiveView("add")}
-                className={`flex items-center md:px-4 md:py-2 px-1 py-2 rounded-lg border border-[#fca311] text-xs ${
+                className={`flex items-center md:px-4 md:py-2 rounded-lg border border-[#fca311] cursor-pointer ${
                   activeView === "add"
                     ? " text-[#fca311]"
                     : "bg-white text-[#fca311] hover:bg-gray-50"
                 } transition-colors duration-200`}
               >
-                <Plus className="w-4 h-4 mr-1 " />
+                <Plus className="w-5 h-5 mr-2 " />
                 Add Certificate
               </button>
             </div>

@@ -103,7 +103,7 @@ function FilterDropdown({
   options,
   value,
   onChange,
-  align = "left",
+  align = "right",
   isDate = false,
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -395,29 +395,36 @@ function MemberDonorRequest() {
 
 
             {/* Filters */}
-            <div className="flex gap-2 md:gap-4">
-              <FilterDropdown
-                isDate={true}
-                value={selectedDate}
-                onChange={(date) => {
-                  setSelectedDate(date);
-                }}
-              />
-              <FilterDropdown
-                options={itemTypeOptions}
-                value={selectedItemType}
-                onChange={(type) => {
-                  setSelectedItemType(type);
-                }}
-              />
-              <FilterDropdown
-                options={statusOptions}
-                value={selectedStatus}
-                onChange={(status) => {
-                  setSelectedStatus(status);
-                }}
-              />
-            </div>
+            <div className=" flex flex-col md:flex-row gap-2 md:gap-4 ml-4">
+  <FilterDropdown
+    
+    isDate={true}
+    value={selectedDate}
+    onChange={(date) => {
+      setSelectedDate(date);
+    }}
+  />
+  <div className="ml-4">
+  <FilterDropdown
+    options={itemTypeOptions}
+    value={selectedItemType}
+    onChange={(type) => {
+      setSelectedItemType(type);
+    }}
+  />
+  </div>
+  <div className="ml-4">
+  <FilterDropdown
+
+    options={statusOptions}
+    value={selectedStatus}
+    onChange={(status) => {
+      setSelectedStatus(status);
+    }}
+  />
+  </div> 
+</div>
+
 
             {/* Desktop View */}
             <div className="hidden lg:block rounded-xl shadow  w-fit  ">

@@ -78,7 +78,7 @@ function CertificateView() {
                                     className="text-[#2b2c43] mb-2"
                                     style={{ fontFamily: "Inter" }}
                                 >
-                                    <span className="lg:text-5xl font-bold">CERTIFICATE</span>
+                                    <span className="text-sm md:text-lg lg:text-5xl font-bold ">CERTIFICATE</span>
                                     <br />
                                     <span className="font-semibold text-sm">Of Achievement</span>
                                 </h1>

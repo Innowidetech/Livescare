@@ -354,7 +354,7 @@ function MemberAccount() {
             {/* Legend with better alignment and counts */}
             <div className='grid p-4'>
               <div className="text-xl font-medium mb-6">INR {totalMoney.toLocaleString()}</div>
-              <div className='grid grid-cols-2 lg:grid-cols-2 gap-3 flex-grow md:ml-8'>
+              <div className='grid grid-cols-2 gap-3 flex-grow md:ml-8'>
                 {allItemsWithPercentages.map((item, index) => (
                   <div
                     key={index}
@@ -369,7 +369,7 @@ function MemberAccount() {
                       />
                       <span className="text-sm font-medium" style={{fontFamily:'Inter'}}>{item.item}</span>
                     </div>
-                    <div className="flex items-center  mr-32 gap-2">
+                    <div className="flex items-center gap-2">
                       <span className="text-xs text-gray-500">
                         ({percentages?.donorRequest?.itemCounts?.[item.item] || 0})
                       </span>
@@ -454,7 +454,7 @@ function MemberAccount() {
             {/* Legend with better alignment and counts */}
             <div className="grid p-4">
               <div className="text-xl font-medium mb-6">INR {submitTotalMoney.toLocaleString()}</div>
-              <div className='grid grid-cols-2 lg:grid-cols-2 gap-3 flex-grow md:ml-8'>
+              <div className='grid grid-cols-2 gap-3 flex-grow md:ml-8'>
                 {allOutflowItemsWithPercentages.map((item, index) => (
                   <div
                     key={index}
@@ -469,7 +469,7 @@ function MemberAccount() {
                       />
                       <span className="text-sm font-medium" style={{fontFamily:'Inter'}}>{item.item}</span>
                     </div>
-                    <div className="flex items-center  mr-32 gap-2">
+                    <div className="flex items-center gap-2">
                       <span className="text-xs text-gray-500">
                         ({percentages?.submitRequest?.itemCounts?.[item.item] || 0})
                       </span>

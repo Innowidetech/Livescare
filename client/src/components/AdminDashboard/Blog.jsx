@@ -122,6 +122,15 @@ function Blog() {
             className="w-full h-48 object-cover rounded-lg"
           />
         </div>
+        <div>
+        <button
+          onClick={() => handleDelete(_id)}
+          className="absolute top-0 right-4 p-2 text-red-500 hover:text-red-700 transition-colors duration-200"
+          title="Delete blog"
+        >
+          <Trash2 className="md:hidden w-5 h-5" />
+        </button>
+        </div>
         <div className="flex justify-between items-start mb-4">
           <div>
             <h3 className="text-sm md:text-xl font-semibold text-gray-800">
@@ -148,7 +157,7 @@ function Blog() {
           className="absolute bottom-4 right-4 p-2 text-red-500 hover:text-red-700 transition-colors duration-200"
           title="Delete blog"
         >
-          <Trash2 className="w-5 h-5" />
+          <Trash2 className="hidden md:block w-5 h-5" />
         </button>
       </div>
     );
@@ -170,24 +179,24 @@ function Blog() {
           <div className="flex space-x-4">
             <button
               onClick={() => setActiveView("all")}
-              className={`flex items-center md:px-4 md:py-2 py-3 px-3 rounded-lg ${
+              className={`flex items-center md:px-4 md:py-2 rounded-lg p-1 ${
                 activeView === "all"
                   ? "bg-[#fca311] text-white"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               } transition-colors duration-200`}
             >
-              <BookOpen className="w-4 h-4 mr-1" />
+              <BookOpen className="w-5 h-5 mr-2" />
               All Blogs
             </button>
             <button
               onClick={() => setActiveView("add")}
-              className={`flex items-center md:px-4 md:py-2 py-3 px-3 rounded-lg border border-[#fca311] ${
+              className={`flex items-center md:px-4 md:py-2 rounded-lg p-1 border border-[#fca311] ${
                 activeView === "add"
                   ? "text-[#fca311]"
                   : "bg-white text-[#fca311] hover:bg-gray-50"
               } transition-colors duration-200`}
             >
-              <Plus className="w-4 h-4 mr-1" />
+              <Plus className="w-5 h-5 mr-2" />
               Add Blog
             </button>
           </div>

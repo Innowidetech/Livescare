@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Logo1 from '../Assets/logo1.png';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -14,7 +15,7 @@ const Navbar = () => {
       <div className="max-w-screen-xl mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center space-x-2">
-          <img src="/Assets/logo1.png" alt="Logo" className="h-14 w-28" />
+          <img src={Logo1} alt="Logo" className="h-14 w-28" />
         </div>
 
         {/* Desktop & Tablet Menu */}

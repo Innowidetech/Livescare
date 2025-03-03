@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {getProfile} from '../../../redux/member/memberProfile';
 import { useDispatch, useSelector } from "react-redux";
 import { FaRegUserCircle } from "react-icons/fa";
+import Logo from '../../../Assets/logo1.png'
 
 const MemberHeader = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const MemberHeader = () => {
       {/* Mobile: Logo */}
       <div className="md:hidden flex items-center mt-8 ml-8">
         <img
-          src="/Assets/logo1.png" 
+          src={Logo}
           alt="Logo"
           className="h-10"
           onClick={()=>navigate('/member')}

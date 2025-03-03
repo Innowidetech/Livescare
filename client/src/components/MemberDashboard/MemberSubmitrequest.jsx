@@ -395,7 +395,7 @@ function MemberSubmitrequest() {
               </h1>
             </div>
 
-            <div className="flex gap-2 md:gap-4">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-4 ml-4">
               <FilterDropdown
                 isDate={true}
                 value={selectedDate}
@@ -403,6 +403,7 @@ function MemberSubmitrequest() {
                   setSelectedDate(date);
                 }}
               />
+              <div className="ml-4">
               <FilterDropdown
                 options={itemTypeOptions}
                 value={selectedItemType}
@@ -410,6 +411,8 @@ function MemberSubmitrequest() {
                   setSelectedItemType(type);
                 }}
               />
+              </div>
+              <div className="ml-4">
               <FilterDropdown
                 options={statusOptions}
                 value={selectedStatus}
@@ -417,6 +420,7 @@ function MemberSubmitrequest() {
                   setSelectedStatus(status);
                 }}
               />
+            </div>
             </div>
 
             <div className="hidden lg:block rounded-xl shadow overflow-x-scroll hide-scrollbar">

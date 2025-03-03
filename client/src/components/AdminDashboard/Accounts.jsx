@@ -149,12 +149,12 @@ const { profile } = useSelector((state) => state.adminProfile);
 
   return (
     <>
-          
-           <h2 className="text-3xl mb-2 font-medium text-left mt-14 md:12" style={{fontFamily:'Inter'}}>Hi,<span className=""> {profile?.loggedinuser?.fullname} </span></h2>
-           
-      <div className="bg-white p-6 shadow-lg rounded-lg border border-gray-300 mt-6 w-full mx-auto">
+           <div className='md:mt-14 mt-10'>
+           <h2 className="text-3xl mb-2 font-medium text-left" style={{fontFamily:'Inter'}}>Hi,<span className=""> {profile?.loggedinuser?.fullname} </span></h2>
+           </div>
+      <div className="bg-white p-6 shadow-lg rounded-lg border border-gray-300 mt-6 w-full mx-4">
         
-        <div className="flex flex-wrap justify-between items-center mb-4  ">
+        <div className="flex flex-wrap justify-between items-center mb-4">
           
           <div className="text-xl font-medium mb-2 sm:mb-0" style={{fontFamily:'Inter'}}>Total Donor Income</div>
 
@@ -278,7 +278,7 @@ const { profile } = useSelector((state) => state.adminProfile);
         </div>
 
         {loading && (
-          <div className="flex justify-center items-center mt-4">
+          <div className="flex justify-center items-center mt-4 ">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
           </div>
         )}
@@ -286,7 +286,7 @@ const { profile } = useSelector((state) => state.adminProfile);
 
       <div className="mt-8 grid lg:grid-cols-2 gap-8">
         {/* Inflow Pie Chart Section */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
+        <div className="bg-white p-6 rounded-lg shadow-lg mx-4">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-medium" style={{fontFamily:'Inter'}}>Inflow invoices</h3>
           </div>
@@ -346,7 +346,7 @@ const { profile } = useSelector((state) => state.adminProfile);
             {/* Legend with better alignment and counts */}
             <div className='grid p-4'>
               <div className="text-xl font-medium mb-6">INR {totalMoney.toLocaleString()}</div>
-              <div className='grid grid-cols-2 lg:grid-cols-2 gap-3 flex-grow md:ml-8'>
+              <div className='grid grid-cols-2 gap-3 flex-grow md:ml-8'>
                 {allItemsWithPercentages.map((item, index) => (
                   <div
                     key={index}
@@ -356,12 +356,12 @@ const { profile } = useSelector((state) => state.adminProfile);
                   >
                     <div className="flex items-center gap-2">
                       <div
-                        className="w-3 h-3 rounded-full "
+                        className="w-3 h-3 rounded-full"
                         style={{ backgroundColor: item.color }}
                       />
                       <span className="text-sm" style={{fontFamily:'Inter'}}>{item.item}</span>
                     </div>
-                    <div className="flex items-center mr-32 gap-2">
+                    <div className="flex items-center gap-2">
                       <span className="text-xs text-gray-500">
                         ({percentages?.donorRequest?.itemCounts?.[item.item] || 0})
                       </span>
@@ -377,7 +377,7 @@ const { profile } = useSelector((state) => state.adminProfile);
         </div>
 
         {/* Outflow Pie Chart Section */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
+        <div className="bg-white p-6 rounded-lg shadow-lg ">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-medium" style={{fontFamily:'Inter'}}>Outflow invoices</h3>
           </div>
@@ -437,7 +437,7 @@ const { profile } = useSelector((state) => state.adminProfile);
             {/* Legend with better alignment and counts */}
             <div className="grid p-4">
               <div className="text-xl font-medium mb-6">INR {submitTotalMoney.toLocaleString()}</div>
-              <div className='grid grid-cols-2 lg:grid-cols-2 gap-3 flex-grow md:ml-8'>
+              <div className='grid grid-cols-2 gap-3 flex-grow md:ml-8'>
                 {allOutflowItemsWithPercentages.map((item, index) => (
                   <div
                     key={index}
@@ -447,13 +447,13 @@ const { profile } = useSelector((state) => state.adminProfile);
                   >
                     <div className="flex items-center gap-2">
                       <div
-                        className="w-3 h-3  rounded-full"
+                        className="w-3 h-3 rounded-full"
                         style={{ backgroundColor: item.color }}
                       />
                       <span className="text-sm" style={{fontFamily:'Inter'}}>{item.item}</span>
                     </div>
-                    <div className="flex items-center mr-32 gap-2">
-                      <span className="text-xs text-gray-500    ">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-500">
                         ({percentages?.submitRequest?.itemCounts?.[item.item] || 0})
                       </span>
                       <span className="text-sm text-gray-600">
@@ -470,7 +470,7 @@ const { profile } = useSelector((state) => state.adminProfile);
 
       {/* Daily Income Graph Section */}
       <div className="mt-8">
-        <div className="bg-white p-6 rounded-lg shadow-lg">
+        <div className="bg-white p-6 rounded-lg shadow-lg mx-4">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-medium" style={{fontFamily:'Inter'}}>Analysis</h3>
             

@@ -10,6 +10,23 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPrograms } from '../redux/homepagePrograms';
 import { fetchDonationData } from '../redux/homepiechat';
+import Food from '../Assets/SlideChil1.png';
+import Meals from '../Assets/SlideChil2.png';
+import Education from '../Assets/SlideChil3.webp';
+import Medical from '../Assets/SlideChil4.jpg'
+import circleImage from '../Assets/happychill.jpg';
+import NutriciousMeal from '../Assets/1.png';
+import HealthCare from '../Assets/2.png';
+import Educationall from '../Assets/3.png';
+import Food1 from '../Assets/food.png';
+import Clothes from '../Assets/6.png';
+import Books from '../Assets/11.png';
+import MedicalLeave from '../Assets/chil5.jpg';
+import Toys from '../Assets/toys.png';
+import Finacial from '../Assets/finance.png';
+import GamesKit from '../Assets/Gamekits.png';
+import Other from '../Assets/other.png';
+
 
 
 
@@ -112,25 +129,25 @@ const HomePage = () => {
 
   const images = [
     {
-      src: "/Assets/SlideChil1.png",
+      src: Food,
       title: "Food for the Poor",
       description: "Target: ₹2,00,000 | Every contribution ensures meals for those in need.",
       location: "Mumbai"
     },
     {
-      src: "/Assets/SlideChil2.png",
+      src: Meals,
       title: "Daily Meals for Senior Citizens",
       description: "Target: ₹2,00,000 | Support us in providing nourishment for elderly.",
       location: "Bihar"
     },
     {
-      src: "/Assets/SlideChil3.webp",
+      src: Education,
       title: "Education for Underprivileged Children",
       description: "Target: ₹2,00,000 | Help us provide learning resources for children.",
       location: "Pune"
     },
     {
-      src: "/Assets/SlideChil4.jpg",
+      src: Medical,
       title: "Medical Aid for Vulnerable Communities",
       description: "Target: ₹2,00,000 | Contribute to essential healthcare services treatments.",
       location: "Hyderabad"
@@ -145,7 +162,7 @@ const HomePage = () => {
   return (
     <div>
       {/* Background Image and Text Section */}
-      <section className="relative h-screen bg-cover bg-center" style={{ backgroundImage: 'url(/Assets/HomeChil.avif)' }}>
+      <section className="relative h-screen bg-cover bg-center" style={{ backgroundImage: 'url(/HomeChil.avif)' }}>
         <div className="relative z-10 flex items-center justify-center sm:justify-center h-full px-6 text-white">
           <div className="max-w-lg text-center sm:text-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 continuousAnimation">
@@ -184,7 +201,7 @@ const HomePage = () => {
         <div className="w-[250px] sm:w-[250px] md:w-[350px] lg:w-[400px] h-[250px] sm:h-[250px] md:h-[350px] lg:h-[400px] bg-[#FCA311] rounded-full mb-4 sm:mb-0 sm:mr-8 animate-pulse">
   <div className="w-full h-full flex justify-center items-center">
     <img
-      src="/Assets/happychill.jpg"
+      src={circleImage}
       alt="Circle Content"
       className="w-64 h-64 object-cover rounded-full"
     />
@@ -244,7 +261,7 @@ const HomePage = () => {
                 {/* Left Side Image */}
                 <div className="w-full sm:w-1/2 mb-6 sm:mb-0">
                   <img
-                    src="/Assets/1.png"
+                    src={NutriciousMeal}
                     alt="Image Description"
                     className="w-full h-auto object-cover rounded-md"
                   />
@@ -266,7 +283,7 @@ const HomePage = () => {
                 {/* Left Side Image */}
                 <div className="w-full sm:w-1/2 mb-6 sm:mb-0">
                   <img
-                    src="/Assets/2.png"
+                    src={HealthCare}
                     alt="Image Description"
                     className="w-full h-auto object-cover rounded-md"
                   />
@@ -288,7 +305,7 @@ const HomePage = () => {
                 {/* Left Side Image */}
                 <div className="w-full sm:w-1/2 mb-6 sm:mb-0">
                   <img
-                    src="/Assets/3.png"
+                    src={Educationall}
                     alt="Image Description"
                     className="w-full h-auto object-cover rounded-md"
                   />
@@ -308,7 +325,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      <section className="bg-white py-16 ">
+      <section className="bg-white py-16 mx-6">
         <div className="container mx-auto text-center">
           <h2 className="text-3xl font-semibold mb-10">How We Work</h2>
 
@@ -321,7 +338,7 @@ const HomePage = () => {
                 <span className="text-white text-2xl font-semibold">1</span>
               </div>
               <h3 className="font-semibold text-base mb-2">Submit Your Request</h3>
-              <p className="text-gray-700 text-sm break-words">Share your requirements with us, and we'll evaluate how we can help.</p>
+              <p className="text-gray-700 md:text-xs lg:text-lg break-words">Share your requirements with us, and we'll evaluate how we can help.</p>
             </div>
 
             {/* Arrow Line to next process */}
@@ -335,7 +352,7 @@ const HomePage = () => {
                 <span className="text-white text-2xl font-semibold">2</span>
               </div>
               <h3 className="font-semibold text-base mb-2">Request Queue</h3>
-              <p className="text-gray-700 text-sm break-words">Stay updated on the progress of requests and pending needs.</p>
+              <p className="text-gray-700 md:text-xs lg:text-lg break-words">Stay updated on the progress of requests and pending needs.</p>
             </div>
 
             {/* Arrow Line to next process */}
@@ -349,7 +366,7 @@ const HomePage = () => {
                 <span className="text-white text-2xl font-semibold">3</span>
               </div>
               <h3 className="font-semibold text-base mb-2">Inventory Tracking</h3>
-              <p className="text-gray-700 text-sm break-words">Check the availability of resources and supplies to address ongoing needs.</p>
+              <p className="text-gray-700 md:text-xs lg:text-lg break-words">Check the availability of resources and supplies to address ongoing needs.</p>
             </div>
 
             {/* Arrow Line to next process */}
@@ -363,7 +380,7 @@ const HomePage = () => {
                 <span className="text-white text-2xl font-semibold">4</span>
               </div>
               <h3 className="font-semibold text-base mb-2">Make a Donation</h3>
-              <p className="text-gray-700 text-sm break-words">Contribute to our mission and bring hope to countless lives.</p>
+              <p className="text-gray-700 md:text-xs lg:text-lg break-words">Contribute to our mission and bring hope to countless lives.</p>
             </div>
           </div>
         </div>
@@ -382,7 +399,7 @@ const HomePage = () => {
           <div className="flex flex-wrap justify-between items-center mt-12 space-y-8 md:space-y-0 md:flex-nowrap">
             {/* Image 1 */}
             <div className="flex flex-col items-center w-full md:w-1/5 pb-6 md:pb-0 relative mx-2">
-              <img src="/Assets/food.png" alt="Item 1" className="w-60 h-32 object-cover rounded-full mb-4" />
+              <img src={Food1} alt="Item 1" className="w-60 h-32 object-cover rounded-full mb-4" />
               <p className="text-lg font-semibold">Food</p>
               <p> Delivering nutritious meals to combat hunger and promote health.
 
@@ -394,7 +411,7 @@ const HomePage = () => {
 
             {/* Image 2 */}
             <div className="flex flex-col items-center w-full md:w-1/5 pb-6 md:pb-0 relative mx-2">
-              <img src="/Assets/6.png" alt="Item 2" className="w-60 h-32 object-cover rounded-full mb-4" />
+              <img src={Clothes} alt="Item 2" className="w-60 h-32 object-cover rounded-full mb-4" />
               <p className="text-lg font-semibold">Clothes</p>
               <p> Offering comfort and dignity with essential apparel.
 
@@ -406,7 +423,7 @@ const HomePage = () => {
 
             {/* Image 3 */}
             <div className="flex flex-col items-center w-full md:w-1/5 pb-6 md:pb-0 relative mx-2">
-              <img src="/Assets/11.png" alt="Item 3" className="w-60 h-32 object-cover rounded-full mb-4" />
+              <img src={Books} alt="Item 3" className="w-60 h-32 object-cover rounded-full mb-4" />
               <p className="text-lg font-semibold">Books</p>
               <p>Enriching minds with education for a brighter future.
 
@@ -419,7 +436,7 @@ const HomePage = () => {
 
             {/* Image 4 */}
             <div className="flex flex-col items-center w-full md:w-1/5 pb-6 md:pb-0 mx-2">
-              <img src="/Assets/chil5.jpg" alt="Item 4" className="w-60 h-32 object-cover rounded-full mb-4" />
+              <img src={MedicalLeave} alt="Item 4" className="w-60 h-32 object-cover rounded-full mb-4" />
               <p className="text-lg font-semibold">Medical Aid</p>
               <p> Providing crucial healthcare for those in need.
 
@@ -432,7 +449,7 @@ const HomePage = () => {
           <div className="flex flex-wrap justify-between items-center mt-12 space-y-8 md:space-y-0 md:flex-nowrap">
             {/* Image 1 */}
             <div className="flex flex-col items-center w-full md:w-1/5 pb-6 md:pb-0 relative mx-2">
-              <img src="/Assets/toys.png" alt="Item 1" className="w-60 h-32 object-cover rounded-full mb-4" />
+              <img src={Toys} alt="Item 1" className="w-60 h-32 object-cover rounded-full mb-4" />
               <p className="text-lg font-semibold">Toys </p>
               <p>Bringing happiness to children through meaningful play.
 
@@ -444,7 +461,7 @@ const HomePage = () => {
 
             {/* Image 2 */}
             <div className="flex flex-col items-center w-full md:w-1/5 pb-6 md:pb-0 relative mx-2">
-              <img src="/Assets/finance.png" alt="Item 2" className="w-60 h-32 object-cover rounded-full mb-4" />
+              <img src={Finacial} alt="Item 2" className="w-60 h-32 object-cover rounded-full mb-4" />
               <p className="text-lg font-semibold">Financial Support              </p>
               <p>Funding initiatives to uplift communities.
               </p>
@@ -455,7 +472,7 @@ const HomePage = () => {
 
             {/* Image 3 */}
             <div className="flex flex-col items-center w-full md:w-1/5 pb-6 md:pb-0 relative mx-2">
-              <img src="/Assets/Gamekits.png" alt="Item 3" className="w-60 h-32 object-cover rounded-full mb-4" />
+              <img src={GamesKit} alt="Item 3" className="w-60 h-32 object-cover rounded-full mb-4" />
               <p className="text-lg font-semibold">Games Kit </p>
               <p> Fostering creativity and development through interactive fun.
               </p>
@@ -466,7 +483,7 @@ const HomePage = () => {
 
             {/* Image 4 */}
             <div className="flex flex-col items-center w-full md:w-1/5 pb-6 md:pb-0 mx-2">
-              <img src="/Assets/other.png" alt="Item 4" className="w-60 h-32 object-cover rounded-full mb-4" />
+              <img src={Other} alt="Item 4" className="w-60 h-32 object-cover rounded-full mb-4" />
               <p className="text-lg font-semibold">Other Essentials
               </p>
               <p>Supplying vital hygiene and emergency relief items.
@@ -482,115 +499,194 @@ const HomePage = () => {
         </div>
       </section>
 
-      <section className="bg-[#Ffba48] py-16">
-        <div className="container mx-auto text-left px-4 md:px-0">
-          <h2 className="text-2xl text-start w-full md:text-3xl lg:text-4xl font-semibold mt-4 md:w-1/2">
-            Transparency in Donations
-          </h2>
+      {/* <section className="bg-[#Ffba48] py-16">
+  <div className="px-6 md:mx-8 text-left">
+    <h2 className="text-2xl text-start w-full md:text-3xl lg:text-4xl font-semibold mt-4 ">
+      Transparency in Donations
+    </h2>
 
-          <div className="flex flex-col md:flex-row justify-between items-center mt-6 md:mt-0">
-            <div className="w-full md:w-1/1 text-left mb-6 md:mb-0">
-              <p className="text-base mb-20">
-                Your trust is invaluable to us. Here's how we allocate your generous contributions:
-              </p>
-              {donationLoading ? (
-                <p>Loading donation data...</p>
-              ) : (
-                <ul className="flex flex-wrap space-x-0 mb-10">
-                  {donationData.map((item, index) => (
-                    <li key={index} className="w-full sm:w-1/2 lg:w-1/3 flex items-center mb-4">
-                      <div
-                        className="w-4 h-4 rounded-full"
-                        style={{ backgroundColor: ['#03318C', '#EE0072', '#7D5B0C', '#CE5E94', '#FFFBEF', '#FF6B6B', '#4ECDC4', '#45B7D1'][index] }}
-                      ></div>
-                      <strong className="ml-2">{item.percentage}% {item.category}</strong>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+    <div className="flex flex-col md:flex-row justify-between items-center mt-6 md:mt-0">
+      <div className="w-full text-left mb-6 md:mb-0">
+        <p className="text-base mb-20">
+          Your trust is invaluable to us. Here's how we allocate your generous contributions:
+        </p>
+        {donationLoading ? (
+          <p>Loading donation data...</p>
+        ) : (
+          <ul className="flex flex-wrap space-x-0 mb-10">
+            {donationData.map((item, index) => (
+              <li key={index} className="w-full sm:w-1/2 lg:w-1/3 flex items-center mb-4">
+                <div
+                  className="w-4 h-4 rounded-full"
+                  style={{ backgroundColor: ['#03318C', '#EE0072', '#7D5B0C', '#CE5E94', '#FFFBEF', '#FF6B6B', '#4ECDC4', '#45B7D1'][index] }}
+                ></div>
+                <strong className="ml-2">{item.percentage}% {item.category}</strong>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
-            <div className="w-full md:w-1/3 flex justify-center md:flex-grow-0">
-              <div className="w-full max-w-[300px] md:max-w-[400px] lg:max-w-[500px]">
-                <DonutChart donationData={donationData} />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-      <section className="bg-[#F7F7F7] py-16">
-        <div className="container mx-auto text-center px-6 md:px-0 relative ">
-          <h2 className="text-3xl font-bold sm:text-xl lg:text-4xl">You Can Contribute!</h2>
-          <p className="mt-4 text-base sm:text-sm md:text-lg">
-            We can make a meaningful impact in the lives of those who are less fortunate.
-          </p>
-          <p className="mtext-base sm:text-sm md:text-lg">
-            Together, we can work towards a world where everyone has access to the resources
-          </p>
-          <p className="text-base sm:text-sm md:text-lg">
-            they need to thrive.
-          </p>
-          <div className="mt-8">
-          <Slider
-  {...{
-    ...settings, // Keep your existing settings
-    arrows: false,  // Disables next/prev arrows
-    autoplay: true,  // Enables automatic sliding
-    autoplaySpeed: 3000,  // Set time interval for automatic sliding (3000ms = 3 seconds)
-    speed: 1000,  // Set the sliding speed (1000ms = 1 second)
-    pauseOnHover: false,  // Disables pausing the slider on hover
-  }}
->
-  {images.map((img, index) => (
-    <div key={index} className="relative">
-      {/* Image container */}
-      <img
-        src={img.src}
-        alt={`Slide ${index + 1}`}
-        className="w-full sm:w-[70%] md:w-[80%] lg:w-[90%] mx-auto h-80 object-cover rounded-lg shadow-lg"
-      />
-
-      {/* Text container that overlaps the image */}
-      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full sm:w-9/12 md:w-8/12 lg:w-8/12 bg-white text-black text-center py-4 px-6 shadow-lg border border-gray-300 h-1/2 z-10">
-        {/* Location Badge: Positioned at the top-left corner of the white box */}
-        <div className="absolute top-0 left-0 w-[50%] sm:w-[40%] md:w-[30%] px-3 py-2 bg-[#14213D] text-white text-xs sm:text-sm font-semibold flex items-center justify-center space-x-2">
-          <FontAwesomeIcon icon={faLocationPin} className="w-3 h-3 sm:w-4 sm:h-4" />
-          <span className="text-center text-xs sm:text-sm">{img.location}</span>
-        </div>
-
-        {/* Text Content */}
-        <p className="text-xs sm:text-sm md:text-xs lg:text-base text-left mt-6 font-bold">{img.title}</p>
-        <p className="text-xs sm:text-sm md:text-xs lg:text-sm text-left">{img.description}</p>
-
-        <div className="absolute bottom-0 left-0 bg-[#14213D] text-white text-xs font-semibold py-2 px-3">
-          <Link to="/DonateNow">
-            <button className="text-white font-semibold text-xs">Donate Now</button>
-          </Link>
+      <div className="w-full md:w-[calc(33.3333%-16px)] flex justify-center md:flex-grow-0">
+        <div className="w-full max-w-[350px] md:max-w-[450px] lg:max-w-[550px]">
+          <DonutChart donationData={donationData} />
         </div>
       </div>
     </div>
-  ))}
-</Slider>
+  </div>
+</section> */}
 
+<section className="bg-[#Ffba48] py-16">
+  <div className="flex flex-col md:flex-row px-6 md:mx-8 justify-between items-center">
+    <div className="w-full md:w-2/3 text-left mb-6 md:mb-0">
+      <h2 className="text-center md:text-left text-xl md:text-3xl lg:text-4xl font-semibold mt-4 py-10">
+        Transparency in Donations
+      </h2>
+      <p className="text-base mb-6 text-center md:text-left">
+        Your trust is invaluable to us. Here's how we allocate your generous contributions:
+      </p>
+      {donationLoading ? (
+        <p>Loading donation data...</p>
+      ) : (
+        <ul className="flex flex-wrap gap-4">
+          {donationData.map((item, index) => (
+            <li key={index} className="w-full sm:w-1/2 lg:w-1/3 flex items-center mb-4">
+              <div
+                className="w-4 h-4 rounded-full"
+                style={{
+                  backgroundColor: [
+                    '#03318C',
+                    '#EE0072',
+                    '#7D5B0C',
+                    '#CE5E94',
+                    '#FFFBEF',
+                    '#FF6B6B',
+                    '#4ECDC4',
+                    '#45B7D1',
+                  ][index],
+                }}
+              ></div>
+              <strong className="ml-2">{item.percentage}% {item.category}</strong>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+
+    <div className="w-full flex justify-start md:justify-end">
+      <div className="w-full max-w-[350px]">
+        <DonutChart donationData={donationData} />
+      </div>
+    </div>
+  </div>
+</section>
+
+<section className="bg-[#F7F7F7] py-16">
+  <div className="container mx-auto text-center px-6 md:px-0 relative">
+    <h2 className="text-3xl font-bold sm:text-xl lg:text-4xl">You Can Contribute!</h2>
+    <p className="mt-4 text-base sm:text-sm md:text-lg">
+      We can make a meaningful impact in the lives of those who are less fortunate.
+    </p>
+    <p className="mt-2 text-base sm:text-sm md:text-lg">
+      Together, we can work towards a world where everyone has access to the resources
+    </p>
+    <p className="mt-2 text-base sm:text-sm md:text-lg">
+      they need to thrive.
+    </p>
+</div>
+<div className="mt-8 mx-6">
+  <Slider
+    {...{
+      ...settings, // Keep your existing settings
+      arrows: false,  // Disables next/prev arrows
+      autoplay: true,  // Enables automatic sliding
+      autoplaySpeed: 3000,  // Set time interval for automatic sliding (3000ms = 3 seconds)
+      speed: 1000,  // Set the sliding speed (1000ms = 1 second)
+      pauseOnHover: false,  // Disables pausing the slider on hover
+      responsive: [
+        {
+          breakpoint: 640, // Mobile devices
+          settings: {
+            slidesToShow: 1, // Show 1 image at a time
+            slidesToScroll: 1, // Scroll 1 image at a time
+            centerMode: true,  // Centers the image in the slider
+            centerPadding: "0", // No padding on sides
+          },
+        },
+        {
+          breakpoint: 1024, // Tablets
+          settings: {
+            slidesToShow: 2, // Show 2 images at a time
+            slidesToScroll: 2, // Scroll 2 images at a time
+            centerMode: true,  // Centers the images in the slider
+            centerPadding: "20px", // Adds padding around the images (for gap)
+          },
+        },
+        {
+          breakpoint: 1280, // Laptops
+          settings: {
+            slidesToShow: 3, // Show 3 images at a time
+            slidesToScroll: 3, // Scroll 3 images at a time
+            centerMode: true,  // Centers the images in the slider
+            centerPadding: "20px", // Adds padding around the images (for gap)
+          },
+        },
+      ],
+    }}
+  >
+    {images.map((img, index) => (
+      <div key={index} className="relative px-6"> 
+        {/* Image container */}
+        <img
+          src={img.src}
+          alt={`Slide ${index + 1}`}
+          className="w-full object-cover rounded-lg"
+        />
+
+        {/* Text container that overlaps the image */}
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full md:w-7/11 lg:w-2/3 bg-white text-black text-center py-4 px-6 z-10">
+          {/* Location Badge: Positioned at the top-left corner of the white box */}
+          <div className="absolute top-0 left-0 px-3 py-2 bg-[#14213D] text-white text-xs sm:text-sm font-semibold flex items-center justify-center space-x-2">
+            <FontAwesomeIcon icon={faLocationPin} className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="text-center text-xs sm:text-sm">{img.location}</span>
+          </div>
+
+          {/* Text Content */}
+          <p className="text-xs sm:text-sm md:text-xs lg:text-base text-left mt-6 font-bold">{img.title}</p>
+          <p className="text-xs sm:text-sm md:text-xs lg:text-sm text-left">{img.description}</p>
+
+          {/* Donate Now Button */}
+          <div className="absolute bottom-0 left-0 bg-[#14213D] text-white text-xs font-semibold py-2 px-3">
+            <Link to="/DonateNow">
+              <button className="text-white font-semibold text-xs">Donate Now</button>
+            </Link>
           </div>
         </div>
-      </section>
+      </div>
+    ))}
+  </Slider>
+</div>
+
+
+
+</section>
+
+
+
 
       <section className="py-16 bg-[#F7F7F7]">
-        <div className="container mx-auto px-6 md:px-0 text-center">
+        <div className="px-6 md:px-0 text-center">
           <h2 className="text-3xl font-bold sm:text-xl lg:text-4xl">Our Programs</h2>
         </div>
 
-        <div className="flex flex-wrap justify-center items-center gap-6 mt-8 mx-auto container px-6 md:px-0">
+        <div className="flex flex-wrap justify-center md:justify-start md:mx-10 items-center gap-6 mt-8 px-6 md:px-0">
           {loading ? (
             <div className="text-center py-4">Loading programs...</div>
           ) : programs.length === 0 ? (
             <div className="text-center py-4">No programs available at the moment.</div>
           ) : (
             programs.map((program) => (
-              <div key={program._id} className="flex flex-col items-center bg-[#FFBA48] text-black py-4 px-6 rounded-lg w-full sm:w-[400px] h-[150px]">
+              <div key={program._id} className="flex flex-col items-center  bg-[#FFBA48] text-black py-4 px-6 rounded-lg w-full sm:w-[400px] h-[150px] mx-2">
                 <div className="flex justify-between w-full items-center">
                   <div className="flex flex-col items-center">
                     <span className="text-4xl font-semibold">

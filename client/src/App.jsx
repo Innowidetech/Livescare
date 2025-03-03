@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
+import { Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from './redux/LoginSlice';
 import Navbar from './components/Navbar';
@@ -33,7 +33,7 @@ const ScrollToTop = () => {
   return null;  
 };
 
-const Layout = () => {
+function App() {
   const location = useLocation();
   const dispatch = useDispatch();
   const token = localStorage.getItem('token');
@@ -133,13 +133,5 @@ const Layout = () => {
     </div>
   );
 };
-
-function App() {
-  return (
-    <Router>
-      <Layout />
-    </Router>
-  );
-}
 
 export default App;
