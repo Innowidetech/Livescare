@@ -209,7 +209,7 @@ exports.getPrograms = async (req, res) => {
     try {
         const currentDate = moment().startOf('day').toDate();
 
-        const programs = await Program.find({ date: { $gte: currentDate } }).sort({ date: 1 });
+        const programs = await Program.find({ date: { $gte: currentDate } }).sort({ date: 1 }).limit(3);
         if (!programs.length) {
             return res.status(404).json({ message: "No upcomming programs." })
         }
