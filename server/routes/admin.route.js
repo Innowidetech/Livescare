@@ -1,6 +1,6 @@
 const express = require('express');
 const { protect } = require('../middleware/auth.middleware');
-const { createItem, editItem, deleteItem, registration, getItems, getMembers, getSubmitRequests, getDonorRequests, getProfile, getCompletedRequestPercentages, dailyUsers, updateDonorRequestStatus, updateSubmitRequestStatus, createCertificate, getCertificates, editCertificate, deleteCertificate, getAllCounts, createProgram, getProgramsForAdmin, deleteProgram, postBlog, getBlogs, editBlog, deleteBlog, getBlogById, getProgramsById, getCertificateById, getCompletedDonors } = require('../controllers/admin.controller');
+const { createItem, editItem, registration, getItems, getMembers, getSubmitRequests, getDonorRequests, getProfile, getCompletedRequestPercentages, dailyUsers, updateDonorRequestStatus, updateSubmitRequestStatus, createCertificate, getCertificates, deleteCertificate, getAllCounts, createProgram, getProgramsForAdmin, deleteProgram, postBlog, getBlogs, editBlog, deleteBlog, getBlogById, getProgramsById, getCertificateById, getCompletedDonors } = require('../controllers/admin.controller');
 const { editProfile } = require('../controllers/member.controller');
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
@@ -25,7 +25,6 @@ router.get('/donors', protect, getCompletedDonors);
 router.post('/certificate', protect, upload.single('photo'), createCertificate);
 router.get('/certificate', protect, getCertificates);
 router.get('/certificate/:certificateId', protect, getCertificateById);
-router.post('/certificate/:certificateId', protect, editCertificate);
 router.delete('/certificate/:certificateId', protect, deleteCertificate);
 router.get('/getCounts', protect, getAllCounts);
 router.post('/program', protect, upload.fields([{ name: 'photo', maxCount: 2 }]), createProgram);

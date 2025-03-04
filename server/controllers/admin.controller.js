@@ -186,38 +186,6 @@ exports.editItem = async (req, res) => {
     }
 };
 
-
-// exports.deleteItem = async (req, res) => {
-//     try {
-//         const { itemId } = req.params;
-//         if (!itemId) {
-//             return res.status(400).json({ message: 'Provide the item Id.' })
-//         }
-
-//         const loggedinid = req.user && req.user.id;
-//         if (!loggedinid) {
-//             return res.status(401).json({ message: 'Unauthorized.' })
-//         }
-
-//         const loggedinuser = await User.findById(loggedinid);
-//         if (!loggedinuser && loggedinuser.role !== 'admin') {
-//             return res.status(404).json({ message: "Only admin can access." })
-//         }
-
-//         const inventory = await Inventory.findById(itemId);
-//         if (!inventory) {
-//             return res.status(404).json({ message: "No item found with the Id." })
-//         }
-
-//         await Inventory.deleteOne(inventory);
-
-//         res.status(201).json({ message: 'Item deleted successfully.' })
-//     }
-//     catch (err) {
-//         return res.status(500).json({ message: 'Internal server error', error: err.message })
-//     }
-// };
-
 exports.getMembers = async (req, res) => {
     try {
         const loggedinid = req.user && req.user.id;
@@ -1016,49 +984,6 @@ exports.getCertificateById = async (req, res) => {
         res.status(200).json({ message: 'Certificate fetched successfully.', certificates });
     } catch (err) {
         return res.status(500).json({ message: 'Internal server error', error: err.message });
-    }
-};
-
-
-exports.editCertificate = async (req, res) => {
-    try {
-        const { certificateId } = req.params;
-        const { newDonorName, newDonationId } = req.body;
-
-        if (!certificateId) {
-            return res.status(400).json({ message: "Please provide certificate id." })
-        }
-        const certificate = await Certificate.findById(certificateId);
-        if (!certificate) {
-            return res.status(404).json({ message: 'No certificate found with given id.' })
-        }
-
-        if (!newDonorName && !newDonationId) {
-            return res.status(400).json({ message: "Provide any new data to update." })
-        }
-
-        const loggedinid = req.user && req.user.id;
-        if (!loggedinid) {
-            return res.status(401).json({ message: 'Unauthorized.' })
-        }
-
-        const loggedinuser = await User.findById(loggedinid);
-        if (!loggedinuser && loggedinuser.role !== 'admin') {
-            return res.status(404).json({ message: "Only admin can access." })
-        }
-
-        certificate.donorName = newDonorName || certificate.donorName;
-        certificate.donationId = newDonationId || certificate.donationId;
-        certificate.signature = certificate.signature;
-        certificate.issuedBy = certificate.issuedBy;
-        certificate.status = certificate.status;
-
-        await certificate.save()
-
-        res.status(201).json({ message: `Certificate updated successfully.`, certificate })
-    }
-    catch (err) {
-        return res.status(500).json({ message: 'Internal server error', error: err.message })
     }
 };
 

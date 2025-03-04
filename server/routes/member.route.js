@@ -5,7 +5,7 @@ const { editProfile, issueCertificate } = require('../controllers/member.control
 const upload = multer({ storage: multer.memoryStorage() });
 const {protect} = require('../middleware/auth.middleware');
 const { getProfile, getItems, getSubmitRequests, getDonorRequests, getCertificates, getAllCounts, getCompletedRequestPercentages, dailyUsers, updateSubmitRequestStatus, updateDonorRequestStatus, getCertificateById } = require('../controllers/admin.controller');
-const { getPrograms } = require('../controllers/user.controller');
+// const { getPrograms } = require('../controllers/user.controller');
 
 const router = express.Router();
 
@@ -22,7 +22,7 @@ router.get('/getCounts', protect, getAllCounts);
 router.patch('/updateCertificateStatus/:certificateId', protect, issueCertificate);
 router.post('/updateSubmitRequestStatus/:requestId/:newStatus', protect, updateSubmitRequestStatus);
 router.post('/updateDonorRequestStatus/:requestId/:newStatus', protect, updateDonorRequestStatus);
-router.get('/programs', getPrograms);
+// router.get('/programs', getPrograms);
 
 
 module.exports = router;
