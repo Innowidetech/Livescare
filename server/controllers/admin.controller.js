@@ -103,6 +103,10 @@ exports.createItem = async (req, res) => {
             else {
                 existingItem.count += count;
             }
+
+            if(existingItem.status == 'Out Of Stock'){
+                existingItem.status = 'Available'
+            }
             await existingItem.save();
             return res.status(200).json({ message: 'Item updated successfully.', existingItem });
         }
