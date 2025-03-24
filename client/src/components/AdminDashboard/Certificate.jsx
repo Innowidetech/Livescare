@@ -18,7 +18,7 @@ function Certificate() {
   const [formData, setFormData] = useState({
     donorName: "",
     donationId: "",
-    issuedDate: "",
+    // issuedDate: "",
     signature: null,
   });
 
@@ -80,7 +80,7 @@ function Certificate() {
     const formDataToSend = new FormData();
     formDataToSend.append("donorName", formData.donorName);
     formDataToSend.append("donationId", formData.donationId);
-    formDataToSend.append("issuedDate", formData.issuedDate);
+    // formDataToSend.append("issuedDate", formData.issuedDate);
     if (formData.signature) {
       const signatureFile = formData.signature.get("signature");
       formDataToSend.append("signature", signatureFile);
@@ -91,7 +91,7 @@ function Certificate() {
     setFormData({
       donorName: "",
       donationId: "",
-      issuedDate: "",
+      // issuedDate: "",
       signature: null,
     });
     setActiveView("all");
@@ -306,7 +306,7 @@ function Certificate() {
                   />
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="block text-sm font-medium text-[#000000] mb-2">
                     Issued Date
                   </label>
@@ -318,7 +318,7 @@ function Certificate() {
                     className="w-full px-3 py-2 border border-[#fca311] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
-                </div>
+                </div> */}
 
                 <div>
                   <label className="block text-sm font-medium text-[#000000] mb-2">

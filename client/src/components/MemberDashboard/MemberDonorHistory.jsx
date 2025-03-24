@@ -216,7 +216,7 @@ function MemberDonorHistory() {
   const statusOptions = [
     { value: "All", label: "All Status" },
     // { value: "Pending", label: "Pending" },
-    { value: "Processing", label: "Processing" },
+    // { value: "Processing", label: "Processing" },
     { value: "Rejected", label: "Rejected" },
     { value: "Completed", label: "Completed" }
   ];

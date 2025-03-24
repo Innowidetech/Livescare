@@ -3,12 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faWhatsapp, faLinkedin, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { registerUser } from '../../redux/RegisterationSlice';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Loginimg from '../../Assets/Loginimg.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const RegistrationRequest = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const registrationState = useSelector((state) => state.registration);
   const { loading } = registrationState || { loading: false };
   
@@ -32,10 +34,64 @@ const RegistrationRequest = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Basic validation
+    if (!formData.fullname || !formData.username || !formData.email || 
+        !formData.mobileNumber || !formData.password || !formData.pincode) {
+      toast.error('Please fill in all fields', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true
+      });
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error('Please enter a valid email address', {
+        position: "top-center",
+        autoClose: 3000
+      });
+      return;
+    }
+
+    // Validate mobile number (10 digits)
+    if (!/^\d{10}$/.test(formData.mobileNumber)) {
+      toast.error('Please enter a valid 10-digit mobile number', {
+        position: "top-center",
+        autoClose: 3000
+      });
+      return;
+    }
+
+    // Validate pincode (6 digits)
+    if (!/^\d{6}$/.test(formData.pincode)) {
+      toast.error('Please enter a valid 6-digit pincode', {
+        position: "top-center",
+        autoClose: 3000
+      });
+      return;
+    }
+    
     try {
       const result = await dispatch(registerUser(formData)).unwrap();
-      toast.success('Registration successful!');
-      // Reset form after successful registration
+      toast.success('Registration successful! Please login to continue', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        onClose: () => {
+          // Navigate to login page after toast closes
+          navigate('/login');
+        }
+      });
+      
+      // Reset form
       setFormData({
         fullname: '',
         username: '',
@@ -45,12 +101,20 @@ const RegistrationRequest = () => {
         pincode: '',
       });
     } catch (error) {
-      toast.error(error || 'Registration failed');
+      toast.error(error?.message || 'Registration failed. Please try again.', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true
+      });
     }
   };
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
+      <ToastContainer />
       {/* Left side with registration form */}
       <div className="w-full md:w-1/1 flex justify-center items-center bg-white p-4 md:p-0">
         <div className="w-full max-w-md p-6">

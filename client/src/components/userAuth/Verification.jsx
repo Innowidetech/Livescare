@@ -6,7 +6,7 @@ const Verification = () => {
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  // const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false); // Modal state for showing success message
@@ -14,7 +14,7 @@ const Verification = () => {
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handleOtpChange = (e) => setOtp(e.target.value);
   const handleNewPasswordChange = (e) => setNewPassword(e.target.value);
-  const handleConfirmPasswordChange = (e) => setConfirmPassword(e.target.value);
+  // const handleConfirmPasswordChange = (e) => setConfirmPassword(e.target.value);
 
   // Submit Email to send OTP (simulating in your case)
   const handleSubmitEmail = (e) => {
@@ -67,25 +67,20 @@ const Verification = () => {
     setIsLoading(true);
     setMessage(''); // Reset message before sending request
 
-    if (!newPassword || !confirmPassword) {
-      setMessage('Please fill in both password fields.');
+    if (!newPassword) {
+      setMessage('Please fill new password field.');
       setIsLoading(false);
       return;
     }
 
-    if (newPassword !== confirmPassword) {
-      setMessage('Passwords do not match.');
-      setIsLoading(false);
-      return;
-    }
 
     try {
       const response = await fetch('https://livescare.onrender.com/api/auth/resetPassword', {
-        method: 'PATCH', // Assuming this is a PATCH method to update the password
+        method: 'POST', // Assuming this is a PATCH method to update the password
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, newPassword }),
+        body: JSON.stringify({ email, newPassword,otp }),
       });
 
       const data = await response.json();
@@ -94,7 +89,7 @@ const Verification = () => {
         setMessage('Your password has been successfully reset.');
         setShowModal(true); // Show success modal
         setTimeout(() => {
-          navigate('/password-updated'); // Navigate to the success page after a short delay
+          navigate('/login'); // Navigate to the success page after a short delay
         }, 2000); // Delay of 2 seconds before navigation
       } else {
         setMessage(data.message || 'There was an issue updating your password.');
@@ -174,7 +169,7 @@ const Verification = () => {
             />
           </div>
 
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label htmlFor="confirm-password" className="block text-gray-700 font-semibold">Confirm Password:</label>
             <input
               type="password"
@@ -184,7 +179,7 @@ const Verification = () => {
               className="w-full p-3 border border-orange-400 rounded-3xl focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             />
-          </div>
+          </div> */}
 
           {message && <p className="text-center text-green-500 mt-2">{message}</p>}
           <button
@@ -204,8 +199,7 @@ const Verification = () => {
               href="#"
               className="text-[#FCA311] font-semibold hover:text-orange-600 transition"
               onClick={(e) => {
-                e.preventDefault();
-                setMessage('A new OTP has been sent to your email.');
+                navigate('/forgotpassword')
               }}
             >
               Resend

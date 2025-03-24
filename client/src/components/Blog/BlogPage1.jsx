@@ -44,12 +44,21 @@ const BlogPage1 = () => {
       </div> */}
       <div className='min-h-screen max-w-7xl mx-auto p-12 mt-8'>
       <div className="">
-          <h2 className="text-3xl text-start font-medium text-black mb-8 ">
-            {currentBlog.blog.title}
-          </h2>
-          <p className="text-lg text-[#525560]">{currentBlog.blog.description.replace(/<[^>]*>/g, '')}</p>
-          <img src= {currentBlog.blog.image} alt=''className='md:w-[350px] lg:w-[500px] py-10'/>
-          </div>
+  <h2 className="text-3xl text-start font-medium text-black mb-8 ">
+    {currentBlog.blog.title}
+  </h2>
+  <p className="text-lg text-[#525560]">
+    {currentBlog.blog.description.replace(/<[^>]*>/g, '')}
+  </p>
+  <div className="flex justify-center py-10">
+    <img
+      src={currentBlog.blog.image}
+      alt=""
+      className="md:w-[350px] lg:w-[500px]"
+    />
+  </div>
+</div>
+
           
 
       </div>

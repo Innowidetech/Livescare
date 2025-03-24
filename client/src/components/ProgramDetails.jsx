@@ -7,7 +7,9 @@ import { fetchProgramById } from "../redux/homepagePrograms";
 function ProgramDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { currentProgram, loading, error } = useSelector((state) => state.programs);
+  const { currentProgram, loading, error } = useSelector(
+    (state) => state.programs
+  );
 
   useEffect(() => {
     if (id) {
@@ -53,7 +55,7 @@ function ProgramDetails() {
     <>
       <div className="">
         <div className="bg-[#fca311] overflow-hidden">
-          <div className="p-8 mt-14" style={{fontFamily:'Inter'}}>
+          <div className="p-8 mt-14" style={{ fontFamily: "Inter" }}>
             <h1 className="text-3xl font-medium text-[#14213d] mb-6 text-center">
               {program.programs.title}
             </h1>
@@ -93,23 +95,22 @@ function ProgramDetails() {
             {program.programs.description}
           </p>
         </div>
-        <div className="p-8 lg:p-12 md:flex gap-4 space-y-4 md:space-y-0">
-        {program.programs.image && (
-  <img 
-    src={program.programs.image[0]} 
-    alt={program.programs.title} 
-    className="md:max-w-[400px] lg:max-w-[600px] border border-red-500" 
-  />
-)}
+        <div className="p-8 lg:p-12 md:grid lg:flex md:justify-center  gap-4 space-y-4 md:space-y-0">
+          {program.programs.image && (
+            <img
+              src={program.programs.image[0]}
+              alt={program.programs.title}
+              className="md:max-w-[400px] lg:max-w-[600px] border border-red-500"
+            />
+          )}
 
-{program.programs.image && program.programs.image[1] && (
-  <img 
-    src={program.programs.image[1]} 
-    alt={program.programs.title} 
-    className="md:max-w-[400px] lg:max-w-[600px] border border-green-500" 
-  />
-)}
-
+          {program.programs.image && program.programs.image[1] && (
+            <img
+              src={program.programs.image[1]}
+              alt={program.programs.title}
+              className="md:max-w-[400px] lg:max-w-[600px] border border-green-500"
+            />
+          )}
         </div>
       </div>
     </>

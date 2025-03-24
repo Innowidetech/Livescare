@@ -12,7 +12,8 @@ const STATUS_TYPES = ['Available', 'Out Of Stock'];
 function AdminInventory() {
   const dispatch = useDispatch();
   const { items, loading, error } = useSelector((state) => state.inventory);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -24,11 +25,12 @@ function AdminInventory() {
   useEffect(() => {
     dispatch(fetchItems());
   }, [dispatch]);
-   const { profile } = useSelector((state) => state.adminProfile);
   
-     useEffect(() => {
-        dispatch(getProfile());
-      }, [dispatch]);
+  const { profile } = useSelector((state) => state.adminProfile);
+  
+  useEffect(() => {
+    dispatch(getProfile());
+  }, [dispatch]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -45,20 +47,14 @@ function AdminInventory() {
         name: formData.name,
         status: formData.status,
         ...(formData.name === 'Money'
-          ? { amount: parseFloat(formData.amount) }
+          ? { amount: Number(formData.amount) }
           : { count: parseInt(formData.count) }
         )
       };
 
-      if (editingItem) {
-        await dispatch(updateItem({ itemId: editingItem._id, itemData })).unwrap();
-        toast.success('Item Updated Successfully');
-      } else {
-        await dispatch(addItem(itemData)).unwrap();
-        toast.success('Item Added Successfully');
-      }
-
-      closeModal();
+      await dispatch(addItem(itemData)).unwrap();
+      toast.success('Item Added Successfully');
+      closeAddModal();
       dispatch(fetchItems());
     } catch (err) {
       toast.error(err.message || 'An error occurred');
@@ -74,24 +70,38 @@ function AdminInventory() {
       amount: item.amount || '',
       status: item.status
     });
-    setIsModalOpen(true);
+    setIsEditModalOpen(true);
   };
 
-  const handleDelete = async (itemId) => {
-    if (window.confirm('Are you sure you want to delete this item?')) {
-      try {
-        await dispatch(deleteItem(itemId)).unwrap();
-        toast.success('Item Deleted Successfully');
-        dispatch(fetchItems());
-      } catch (err) {
-        toast.error(err.message || 'Failed to delete item');
-        console.error('Failed to delete item:', err);
-      }
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const itemData = {
+        status: formData.status,
+        ...(editingItem.itemName === 'Money'
+          ? { amount: Number(formData.amount) }
+          : { count: parseInt(formData.count) }
+        )
+      };
+
+      await dispatch(updateItem({ itemId: editingItem._id, itemData })).unwrap();
+      toast.success('Item Updated Successfully');
+      closeEditModal();
+      dispatch(fetchItems());
+    } catch (err) {
+      toast.error(err.message || 'Failed to update item');
+      console.error('Failed to update item:', err);
     }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const closeAddModal = () => {
+    setIsAddModalOpen(false);
+    setFormData({ name: '', count: '', amount: '', status: 'Available' });
+    dispatch(clearError());
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
     setEditingItem(null);
     setFormData({ name: '', count: '', amount: '', status: 'Available' });
     dispatch(clearError());
@@ -99,33 +109,23 @@ function AdminInventory() {
 
   return (
     <>
-      <div className="md:p-6 md:mt-10 mt-12 ">
-      <div className="flex justify-between items-center mb-6 flex-wrap">
-  {/* User Greeting Text */}
-  <h2
-    className="text-3xl sm:text-2xl md:text-3xl mb-2 font-medium text-left"
-    style={{ fontFamily: 'Inter' }}
-  >
-    Hi, <span className="">{profile?.loggedinuser?.fullname}</span>
-  </h2>
+      <div className="md:p-6 md:mt-10 mt-12">
+        <div className="flex justify-between items-center mb-6 flex-wrap">
+          <h2 className="text-3xl sm:text-2xl md:text-3xl mb-2 font-medium text-left" style={{ fontFamily: 'Inter' }}>
+            Hi, <span className="">{profile?.loggedinuser?.fullname}</span>
+          </h2>
 
-  {/* Inventory Text */}
-  <h1
-    className="text-xl sm:text-xl md:text-3xl font-medium text-left sm:text-center md:text-left"
-    style={{ fontFamily: 'Inter' }}
-  >
-    Inventory
-  </h1>
+          <h1 className="text-xl sm:text-xl md:text-3xl font-medium text-left sm:text-center md:text-left" style={{ fontFamily: 'Inter' }}>
+            Inventory
+          </h1>
 
-  {/* Add Item Button */}
-  <button
-    onClick={() => setIsModalOpen(true)}
-    className="bg-[#FCA311] text-white px-4 py-2 rounded-md hover:bg-[#e59310] transition-colors mt-4 md:mt-0"
-  >
-    <h1 className="md:text-lg sm:text-base text-sm">Add Item</h1>
-  </button>
-</div>
-
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="bg-[#FCA311] text-white px-4 py-2 rounded-md hover:bg-[#e59310] transition-colors mt-4 md:mt-0"
+          >
+            <h1 className="md:text-lg sm:text-base text-sm">Add Item</h1>
+          </button>
+        </div>
 
         {/* Items Table */}
         <div className="lg:bg-white rounded-lg lg:shadow overflow-hidden">
@@ -146,11 +146,10 @@ function AdminInventory() {
             ) : (
               <div className="hidden lg:block overflow-x-auto">
                 <table className="w-full">
-                  <thead className="">
+                  <thead>
                     <tr className='bg-[#F1F4F9] rounded-xl'>
                       <th className="px-6 py-3 text-left text-sm font-medium text-[#202224]" style={{ fontFamily: 'Inter' }}>Item Name</th>
                       <th className="px-6 py-3 text-left text-sm font-medium text-[#202224]" style={{ fontFamily: 'Inter' }}>Count/Amount</th>
-                      {/* <th className="px-6 py-3 text-left text-sm font-medium text-[#202224]" style={{ fontFamily: 'Inter' }}>Amount</th> */}
                       <th className="px-6 py-3 text-left text-sm font-medium text-[#202224]" style={{ fontFamily: 'Inter' }}>Status</th>
                       <th className="px-6 py-3 text-left text-sm font-medium text-[#202224]" style={{ fontFamily: 'Inter' }}>Actions</th>
                     </tr>
@@ -164,20 +163,16 @@ function AdminInventory() {
                           </div>
                         </td>
                         <td className="px-6 py-4 lg:px-14">
-  {item.amount !== undefined && item.amount !== null
-    ? `$ ${Number(item.amount).toFixed(2)}`
-    : (item.count !== undefined && item.count !== null
-      ? `${item.count}`
-      : '--')}
-</td>
-
+                          {item.itemName === 'Money'
+                            ? item.amount ? `$${Number(item.amount).toFixed(2)}` : '--'
+                            : item.count || '--'}
+                        </td>
                         <td className="px-6 py-4">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs ${item.status === 'Available'
+                          <span className={`px-2 py-1 rounded-full text-xs ${
+                            item.status === 'Available'
                               ? 'bg-green-100 text-green-800'
                               : 'bg-red-100 text-red-800'
-                              }`}
-                          >
+                          }`}>
                             {item.status}
                           </span>
                         </td>
@@ -190,14 +185,6 @@ function AdminInventory() {
                             >
                               <PencilIcon className="h-4 w-4" />
                             </button>
-                            {/* <hr className="w-[1px] h-4 bg-[#FCA311] border-none" /> */}
-                            {/* <button
-                              onClick={() => handleDelete(item._id)}
-                              className="text-gray-600 hover:text-red-600 transition-colors"
-                              title="Delete item"
-                            >
-                              <TrashIcon className="h-4 w-4" />
-                            </button> */}
                           </div>
                         </td>
                       </tr>
@@ -208,63 +195,42 @@ function AdminInventory() {
             )}
           </div>
         </div>
+
+        {/* Mobile View */}
         <div className="lg:hidden space-y-4">
           {items.map((item) => (
-            <div
-              key={item._id}
-              className="bg-[#FCFDFD] rounded-xl p-4 space-y-4"
-            >
+            <div key={item._id} className="bg-[#FCFDFD] rounded-xl p-4 space-y-4">
               <div className="space-y-2">
                 <div className="grid">
                   <div className="flex items-center justify-between" style={{ fontFamily: 'Inter' }}>
-                    <h1 className="text-left font-medium text-[#202224] text-sm">
-                      Item Name
-                    </h1>
-                    <h1 className="py-4 text-[#202224]">
-                      {item.itemName}
-                    </h1>
+                    <h1 className="text-left font-medium text-[#202224] text-sm">Item Name</h1>
+                    <h1 className="py-4 text-[#202224]">{item.itemName}</h1>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <h1 className="text-left font-medium text-[#202224] text-sm">
-                      Count
+                      {item.itemName === 'Money' ? 'Amount' : 'Count'}
                     </h1>
                     <h1 className="py-4 text-[#202224]">
-                      {item.name === 'count'
-                        ? (item.count ? `$${item.count}` : '--')
-                        : (item.count ? item.count : '--')}
+                      {item.itemName === 'Money'
+                        ? item.amount ? `$${Number(item.amount).toFixed(2)}` : '--'
+                        : item.count || '--'}
                     </h1>
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <h1 className="text-left font-medium text-[#202224] text-sm">
-                      Amount
-                    </h1>
-                    <h1 className="py-4 text-[#202224]">
-                      {item.name === 'Money'
-                        ? (item.amount ? `$${item.amount.toFixed(2)}` : '--')
-                        : (item.amount ? item.amount : '--')}
-                    </h1>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <h1 className="text-left font-medium text-[#202224] text-sm">
-                      Status
-                    </h1>
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs ${item.status === 'Available'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
-                        }`}
-                    >
+                    <h1 className="text-left font-medium text-[#202224] text-sm">Status</h1>
+                    <span className={`px-2 py-1 rounded-full text-xs ${
+                      item.status === 'Available'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}>
                       {item.status}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between pt-2">
-                    <h1 className="text-left font-medium text-[#202224] text-sm">
-                      Actions
-                    </h1>
+                    <h1 className="text-left font-medium text-[#202224] text-sm">Actions</h1>
                     <div className="flex space-x-2">
                       <button
                         onClick={() => handleEdit(item)}
@@ -273,14 +239,6 @@ function AdminInventory() {
                       >
                         <PencilIcon className="h-4 w-4" />
                       </button>
-                      {/* <hr className="w-[1px] h-4 bg-[#FCA311] border-none" /> */}
-                      {/* <button
-                        onClick={() => handleDelete(item._id)}
-                        className="text-gray-600 hover:text-red-600 transition-colors"
-                        title="Delete item"
-                      >
-                        <TrashIcon className="h-4 w-4" />
-                      </button> */}
                     </div>
                   </div>
                 </div>
@@ -289,18 +247,13 @@ function AdminInventory() {
           ))}
         </div>
 
-        {/* Modal */}
-        {isModalOpen && (
+        {/* Add Modal */}
+        {isAddModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-lg p-6 w-full max-w-md">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold">
-                  {editingItem ? 'Edit Item' : 'Add Item'}
-                </h3>
-                <button
-                  onClick={closeModal}
-                  className="text-gray-500 hover:text-gray-700 transition-colors"
-                >
+                <h3 className="text-lg font-semibold">Add Item</h3>
+                <button onClick={closeAddModal} className="text-gray-500 hover:text-gray-700 transition-colors">
                   <XIcon className="h-5 w-5" />
                 </button>
               </div>
@@ -318,9 +271,7 @@ function AdminInventory() {
                     >
                       <option value="">Select Item Type</option>
                       {ITEM_TYPES.map((type) => (
-                        <option key={type} value={type}>
-                          {type}
-                        </option>
+                        <option key={type} value={type}>{type}</option>
                       ))}
                     </select>
                   </div>
@@ -364,17 +315,13 @@ function AdminInventory() {
                       className="mt-1 block w-full p-3 rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
                     >
                       {STATUS_TYPES.map((status) => (
-                        <option key={status} value={status}>
-                          {status}
-                        </option>
+                        <option key={status} value={status}>{status}</option>
                       ))}
                     </select>
                   </div>
 
                   {error && (
-                    <div className="text-red-600 text-sm p-2 bg-red-50 rounded">
-                      {error}
-                    </div>
+                    <div className="text-red-600 text-sm p-2 bg-red-50 rounded">{error}</div>
                   )}
 
                   <button
@@ -385,11 +332,98 @@ function AdminInventory() {
                     {loading ? (
                       <span className="flex items-center justify-center">
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                        {editingItem ? 'Updating...' : 'Adding...'}
+                        Adding...
                       </span>
-                    ) : (
-                      editingItem ? 'Update Item' : 'Add Item'
-                    )}
+                    ) : 'Add Item'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Modal */}
+        {isEditModalOpen && editingItem && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">Edit Item</h3>
+                <button onClick={closeEditModal} className="text-gray-500 hover:text-gray-700 transition-colors">
+                  <XIcon className="h-5 w-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleUpdate}>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Item Name</label>
+                    <input
+                      type="text"
+                      value={editingItem.itemName}
+                      disabled
+                      className="mt-1 block w-full p-3 rounded-md border-gray-300 bg-gray-100 cursor-not-allowed"
+                    />
+                  </div>
+
+                  {editingItem.itemName === 'Money' ? (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">Amount ($)</label>
+                      <input
+                        type="number"
+                        name="amount"
+                        value={formData.amount}
+                        onChange={handleInputChange}
+                        required
+                        min="0"
+                        step="0.01"
+                        className="mt-1 block w-full p-3 rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">Count</label>
+                      <input
+                        type="number"
+                        name="count"
+                        value={formData.count}
+                        onChange={handleInputChange}
+                        required
+                        min="0"
+                        className="mt-1 block w-full p-3 rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                      />
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Status</label>
+                    <select
+                      name="status"
+                      value={formData.status}
+                      onChange={handleInputChange}
+                      required
+                      className="mt-1 block w-full p-3 rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                    >
+                      {STATUS_TYPES.map((status) => (
+                        <option key={status} value={status}>{status}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {error && (
+                    <div className="text-red-600 text-sm p-2 bg-red-50 rounded">{error}</div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-[#FCA311] text-white px-4 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#e59310] transition-colors"
+                  >
+                    {loading ? (
+                      <span className="flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                        Updating...
+                      </span>
+                    ) : 'Update Item'}
                   </button>
                 </div>
               </form>

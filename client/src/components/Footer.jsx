@@ -1,10 +1,57 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Company from "../Assets/logo1.png";
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    
+    if (!email) {
+      toast.error('Please enter your email address', {
+        position: "top-right",
+        autoClose: 3000
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch('https://livescare.onrender.com/api/user/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.status === 200) {
+        toast.success('Successfully subscribed to our newsletter!', {
+          position: "top-right",
+          autoClose: 3000
+        });
+        setEmail(''); // Clear the input after successful subscription
+      } else {
+        const data = await response.json();
+        toast.error(data.message || 'Failed to subscribe. Please try again.', {
+          position: "top-right",
+          autoClose: 3000
+        });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Something went wrong. Please try again later.', {
+        position: "top-right",
+        autoClose: 3000
+      });
+    }
+  };
+
   return (
     <footer className="bg-gray-800 text-white py-14 px-4">
+      <ToastContainer />
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {/* Column 1 */}
         <div>
@@ -81,16 +128,21 @@ const Footer = () => {
             Subscribe to get latest updates
           </h4>
           <div className="mt-8">
-            <div className="flex items-center ">
+            <form onSubmit={handleSubscribe} className="flex items-center">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="p-2  text-white bg-[#14213D] focus:outline-none border border-white"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="p-2 text-white bg-[#14213D] focus:outline-none border border-white"
               />
-              <button className="bg-white text-black py-2 px-2 hover:bg-blue-600 border border-white">
+              <button 
+                type="submit"
+                className="bg-white text-black py-2 px-2 hover:bg-blue-600 hover:text-white transition-colors duration-300 border border-white"
+              >
                 Subscribe
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>

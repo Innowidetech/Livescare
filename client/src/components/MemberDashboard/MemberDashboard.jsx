@@ -332,7 +332,8 @@ const MemberDashboard = () => {
 
           <div className="bg-white p-4 sm:p-6 shadow-lg rounded-lg border border-gray-300">
             <div className="flex justify-between mb-4 flex-wrap">
-              <div className="text-lg font-bold sm:text-xl w-full sm:w-auto text-[#1e1e1e]" style={{fontFamily:'Inter'}}>Submit Requests</div>
+            <div className="text-lg font-medium sm:text-xl w-full sm:w-auto text-[#1e1e1e]" style={{fontFamily:'Inter'}}>Submit Requests</div>
+
               <div className="flex items-center bg-[#fcfdfd] border border-[#d5d5d5] rounded-md px-3 py-2 sm:px-4 sm:py-3 w-full sm:w-auto justify-between mt-2 sm:mt-0">
                 <DatePicker
                   selected={selectedDate}

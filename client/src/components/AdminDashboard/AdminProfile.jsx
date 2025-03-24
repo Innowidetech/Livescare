@@ -51,7 +51,7 @@ function AdminProfile() {
     // Updated patterns to allow base URLs and more flexible formats
     const patterns = {
       facebook: /^(https?:\/\/)?(www\.)?(facebook|fb)\.com(\/.*)?$/,
-      twitter: /^(https?:\/\/)?(www\.)?twitter\.com(\/.*)?$/,
+      twitter: /^(https?:\/\/)?(www\.)?x\.com(\/.*)?$/,
       linkedin: /^(https?:\/\/)?(www\.)?linkedin\.com(\/.*)?$/
     };
 
@@ -368,7 +368,7 @@ function AdminProfile() {
                       name="twitter"
                       value={formData.twitter || ''}
                       onChange={handleInputChange}
-                      placeholder="https://twitter.com/username"
+                      placeholder="https://x.com/username"
                       className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 ${
                         errors.twitter ? 'border-red-500 focus:ring-red-200' : 'border-[#fca311] focus:ring-[#fca311]'
                       }`}

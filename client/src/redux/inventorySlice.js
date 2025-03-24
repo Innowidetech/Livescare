@@ -47,44 +47,99 @@ export const fetchItems = createAsyncThunk(
 
 export const addItem = createAsyncThunk(
   'inventory/addItem',
-  async (itemData, { rejectWithValue }) => {
+  async (itemData, { getState, rejectWithValue }) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No authentication token found');
       }
 
-      const apiData = {
-        itemName: itemData.name,
-        status: itemData.status,
-        ...(itemData.name === 'Money' 
-          ? { amount: itemData.amount.toString() }
-          : { count: itemData.count.toString() }
-        )
-      };
+      // Check if item already exists
+      const state = getState();
+      const existingItem = state.inventory.items.find(
+        item => item.itemName === itemData.name
+      );
 
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(apiData),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        return rejectWithValue(
-          errorData?.message || `Failed to add item (${response.status})`
-        );
+      if (existingItem) {
+        // If item exists, calculate new quantity
+        const newQuantity = itemData.name === 'Money'
+          ? (Number(existingItem.amount) + Number(itemData.amount)).toString()
+          : (Number(existingItem.count) + Number(itemData.count)).toString();
+
+        // Update existing item with combined quantity
+        const apiData = {
+          newStatus: itemData.status,
+          ...(itemData.name === 'Money'
+            ? { newAmount: newQuantity }
+            : { newCount: newQuantity }
+          )
+        };
+
+        const response = await fetch(`${API_URL}/${existingItem._id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(apiData),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => null);
+          return rejectWithValue(
+            errorData?.message || `Failed to update item (${response.status})`
+          );
+        }
+
+        const data = await response.json();
+        if (!data) {
+          return rejectWithValue('Invalid response format from server');
+        }
+
+        return {
+          ...data,
+          _id: existingItem._id,
+          itemName: itemData.name,
+          status: itemData.status,
+          ...(itemData.name === 'Money'
+            ? { amount: newQuantity }
+            : { count: newQuantity }
+          )
+        };
+      } else {
+        // If item doesn't exist, create new
+        const apiData = {
+          itemName: itemData.name,
+          status: itemData.status,
+          ...(itemData.name === 'Money' 
+            ? { amount: itemData.amount.toString() }
+            : { count: itemData.count.toString() }
+          )
+        };
+
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(apiData),
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => null);
+          return rejectWithValue(
+            errorData?.message || `Failed to add item (${response.status})`
+          );
+        }
+        
+        const data = await response.json();
+        if (!data) {
+          return rejectWithValue('Invalid response format from server');
+        }
+        
+        return data;
       }
-      
-      const data = await response.json();
-      if (!data) {
-        return rejectWithValue('Invalid response format from server');
-      }
-      
-      return data;
     } catch (error) {
       console.error('Add item error:', error);
       return rejectWithValue(error instanceof Error ? error.message : 'An error occurred');
@@ -211,7 +266,17 @@ const inventorySlice = createSlice({
       })
       .addCase(addItem.fulfilled, (state, action) => {
         state.loading = false;
-        state.items.push(action.payload);
+        const existingItemIndex = state.items.findIndex(
+          item => item._id === action.payload._id
+        );
+        
+        if (existingItemIndex !== -1) {
+          // Update existing item
+          state.items[existingItemIndex] = action.payload;
+        } else {
+          // Add new item
+          state.items.push(action.payload);
+        }
         state.error = null;
       })
       .addCase(addItem.rejected, (state, action) => {
