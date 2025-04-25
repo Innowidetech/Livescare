@@ -24,7 +24,7 @@ router.post('/updateDonorRequestStatus/:requestId/:newStatus', protect, updateDo
 router.get('/donors', protect, getCompletedDonors);
 router.post('/certificate', protect, upload.single('photo'), createCertificate);
 router.get('/certificate', protect, getCertificates);
-// router.get('/certificate/:certificateId', protect, getCertificateById);
+router.get('/certificate/:certificateId', protect, getCertificateById);
 router.delete('/certificate/:certificateId', protect, deleteCertificate);
 router.get('/getCounts', protect, getAllCounts);
 router.post('/program', protect, upload.fields([{ name: 'photo', maxCount: 2 }]), createProgram);
