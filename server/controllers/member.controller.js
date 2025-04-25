@@ -52,8 +52,8 @@ exports.editProfile = async (req, res) => {
 exports.issueCertificate = async(req,res)=>{
 try {
         const {certificateId} = req.params;
-        const { issuedTo, relation, deliveredDate, status} = req.body;
-        if(!issuedTo || !relation || !deliveredDate || !status){ return res.status(400).json({message:"Provide the following details to issue certificate."})}
+        const { issuedTo, deliveredDate, status} = req.body;
+        if(!issuedTo || !deliveredDate || !status){ return res.status(400).json({message:"Provide the following details to issue certificate."})}
         if(!certificateId){
             return res.status(400).json({message:"Please provide certificate id."})
         }
@@ -79,8 +79,6 @@ try {
 
         certificate.status = status;
         certificate.issuedTo = issuedTo;
-        certificate.relation = relation;
-        certificate.issuedBy = loggedinuser.fullname;
         certificate.deliveredDate = deliveredDate;
         certificate.save()
 

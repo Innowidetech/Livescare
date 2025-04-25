@@ -25,7 +25,6 @@ const CertificateSchema = new mongoose.Schema({
     required:true,
   },
   issuedTo:String,
-  relation:String,
   deliveredDate:{
     type:String,
     default:'-'
